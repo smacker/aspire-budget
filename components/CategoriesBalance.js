@@ -4,6 +4,7 @@ import { StyleSheet, View, FlatList, Text } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
 import Loading from './Loading';
+import Retry from './Retry';
 
 import useAsync from '../state/useAsync';
 import { ApiContext } from '../state/apiContext';
@@ -95,14 +96,14 @@ function Row({ item, onPress }) {
 
 function CategoriesBalance({ navigation }) {
   const { fetchCategoriesBalance } = useContext(ApiContext);
-  const { status, value, error } = useAsync(fetchCategoriesBalance);
+  const { status, value, error, execute } = useAsync(fetchCategoriesBalance);
 
   if (status === 'pending') {
     return <Loading />;
   }
 
   if (status === 'error') {
-    return <Text>{error}</Text>;
+    return <Retry action={execute} />;
   }
 
   return (
