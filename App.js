@@ -124,11 +124,6 @@ function App() {
     return <LoginScreen authStatus={authStatus} login={login} />;
   }
 
-  // Screen to choose a spreadsheet
-  if (!spreadsheetId) {
-    return <SpreadSheetsScreen onSelect={setSpreadsheetId} />;
-  }
-
   return (
     <AuthProvider
       login={login}
@@ -144,7 +139,11 @@ function App() {
       >
         <PaperProvider>
           <NavigationContainer>
-            <SpreadsheetValidator setSpreadsheetId={setSpreadsheetId} />
+            {spreadsheetId ? (
+              <SpreadsheetValidator setSpreadsheetId={setSpreadsheetId} />
+            ) : (
+              <SpreadSheetsScreen onSelect={setSpreadsheetId} />
+            )}
           </NavigationContainer>
         </PaperProvider>
       </ApiProvider>

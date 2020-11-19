@@ -4,20 +4,21 @@ import { FlatList } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
 import Loading from './Loading';
+import Retry from './Retry';
 
 import useAsync from '../state/useAsync';
 import { ApiContext } from '../state/apiContext';
 
 function SpreadSheetsList({ onSelect }) {
   const { fetchSpreadSheets } = useContext(ApiContext);
-  const { status, value, error } = useAsync(fetchSpreadSheets);
+  const { status, value, error, execute } = useAsync(fetchSpreadSheets);
 
   if (status === 'pending') {
-    return <Loading />;
+    return <Loading size="large" fill />;
   }
 
   if (status === 'error') {
-    return <Text>{error}</Text>;
+    return <Retry action={execute} />;
   }
 
   return (
