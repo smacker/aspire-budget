@@ -4,7 +4,6 @@ import * as Font from 'expo-font';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Provider as PaperProvider } from 'react-native-paper';
 
 import useGoogleAuth from './state/useGoogleAuth';
 import useSecureStore from './state/useSecureStore';
@@ -18,11 +17,13 @@ import DashboardScreen from './screens/DashboardScreen';
 import BalancesScreen from './screens/BalancesScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import Loading from './components/Loading';
-import { Snackbar } from 'react-native-paper';
+import SnackBar from 'react-native-snackbar-component';
 
 const Tab = createBottomTabNavigator();
 
-// This component has awful UX
+// This component cases bad UX when incorrect item chosen
+// - it shows empty loading (without header)
+// - header is rendered but new loader appears inside list of items
 function SpreadsheetValidator({ setSpreadsheetId }) {
   const { verifySpreadSheet } = useContext(ApiContext);
   const { status, value, error } = useAsync(verifySpreadSheet);
@@ -33,8 +34,6 @@ function SpreadsheetValidator({ setSpreadsheetId }) {
   }
 
   if (error || !value) {
-    console.log('err', error, 'value', value);
-
     return [
       <SpreadSheetsScreen
         onSelect={(id) => {
@@ -43,17 +42,15 @@ function SpreadsheetValidator({ setSpreadsheetId }) {
         }}
         key="screen"
       />,
-      <Snackbar
+      <SnackBar
         visible={visible}
         key="notification"
-        onDismiss={() => setVisible(false)}
-      >
-        Incorrect file, please try another one
-      </Snackbar>,
+        textMessage="Incorrect file, please try another one"
+        actionHandler={() => setVisible(false)}
+        backgroundColor="#b00020"
+      ></SnackBar>,
     ];
   }
-
-  console.log('value', value);
 
   return <MainScreen />;
 }
@@ -137,15 +134,13 @@ function App() {
         spreadsheetId={spreadsheetId}
         onUnauthorizedError={logout}
       >
-        <PaperProvider>
-          <NavigationContainer>
-            {spreadsheetId ? (
-              <SpreadsheetValidator setSpreadsheetId={setSpreadsheetId} />
-            ) : (
-              <SpreadSheetsScreen onSelect={setSpreadsheetId} />
-            )}
-          </NavigationContainer>
-        </PaperProvider>
+        <NavigationContainer>
+          {spreadsheetId ? (
+            <SpreadsheetValidator setSpreadsheetId={setSpreadsheetId} />
+          ) : (
+            <SpreadSheetsScreen onSelect={setSpreadsheetId} />
+          )}
+        </NavigationContainer>
       </ApiProvider>
     </AuthProvider>
   );

@@ -28,10 +28,10 @@
     "react-native": "https://github.com/expo/react-native/archive/sdk-38.0.2.tar.gz",
     "react-native-elements": "^2.3.2",
     "react-native-gesture-handler": "~1.6.0",
-    "react-native-paper": "^4.1.0",
     "react-native-reanimated": "~1.9.0",
     "react-native-safe-area-context": "~3.0.7",
     "react-native-screens": "~2.9.0",
+    "react-native-snackbar-component": "^1.1.11",
     "react-native-web": "~0.11.7"
   },
   "devDependencies": {
