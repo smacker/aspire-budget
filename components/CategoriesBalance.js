@@ -1,9 +1,8 @@
 import React, { useContext } from 'react';
-import { StyleSheet, View, FlatList, Text } from 'react-native';
+import { StyleSheet, View, FlatList, Text, RefreshControl } from 'react-native';
 
 import { ListItem } from 'react-native-elements';
 
-import Loading from './Loading';
 import Retry from './Retry';
 
 import useAsync from '../state/useAsync';
@@ -96,11 +95,7 @@ function Row({ item, onPress }) {
 
 function CategoriesBalance({ navigation }) {
   const { fetchCategoriesBalance } = useContext(ApiContext);
-  const { status, value, error, execute } = useAsync(fetchCategoriesBalance);
-
-  if (status === 'pending') {
-    return <Loading />;
-  }
+  const { status, value, execute } = useAsync(fetchCategoriesBalance);
 
   if (status === 'error') {
     return <Retry action={execute} />;
@@ -110,6 +105,8 @@ function CategoriesBalance({ navigation }) {
     <FlatList
       data={value}
       keyExtractor={(item) => item.id}
+      refreshing={status === 'pending'}
+      onRefresh={execute}
       renderItem={({ item }) => {
         return (
           <Row

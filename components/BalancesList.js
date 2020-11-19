@@ -3,27 +3,25 @@ import { View, FlatList, Text } from 'react-native';
 
 import { ListItem } from 'react-native-elements';
 
-import Loading from './Loading';
+import Retry from './Retry';
 
 import useAsync from '../state/useAsync';
 import { ApiContext } from '../state/apiContext';
 
 function BalancesList() {
   const { fetchBalances } = useContext(ApiContext);
-  const { status, value, error } = useAsync(fetchBalances);
-
-  if (status === 'pending') {
-    return <Loading />;
-  }
+  const { status, value, execute } = useAsync(fetchBalances);
 
   if (status === 'error') {
-    return <Text>{error}</Text>;
+    return <Retry action={execute} />;
   }
 
   return (
     <FlatList
       data={value}
       keyExtractor={(item) => item.id}
+      refreshing={status === 'pending'}
+      onRefresh={execute}
       renderItem={({ item }) => {
         return (
           <ListItem bottomDivider>
