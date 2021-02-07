@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
+import { ANDROID_CLIENT_ID } from '@env';
 import * as Google from 'expo-google-app-auth';
 import useSecureStore from './useSecureStore';
 
 const accessTokenKey = 'aspire-access-token';
-const androidClientId = `***REMOVED***`;
 const scopes = [
   'https://www.googleapis.com/auth/drive.readonly',
   'https://www.googleapis.com/auth/spreadsheets',
@@ -35,10 +35,9 @@ function useGoogleAuth() {
     try {
       const resp = await Google.logInAsync({
         // iosClientId: `<YOUR_IOS_CLIENT_ID_FOR_EXPO>`,
-        androidClientId,
+        androidClientId: ANDROID_CLIENT_ID,
         // iosStandaloneAppClientId: `<YOUR_IOS_CLIENT_ID>`,
         // androidStandaloneAppClientId: `<YOUR_ANDROID_CLIENT_ID>`,
-        //clientId: `595356817186-qfm5i61vmck9kisgf9jrhbtdnodebkt4.apps.googleusercontent.com`,
         scopes,
       });
 
