@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "aspire",
+    "name": "Aspire Budgeting",
     "slug": "aspire",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -13,14 +13,22 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "android": {
+      "package": "ru.smacker.aspire",
+      "versionCode": 1,
+      "config": {
+        "googleSignIn": {
+          "apiKey": "***REMOVED***",
+          "certificateHash": "***REMOVED***"
+        }
+      }
     }
   }
 }

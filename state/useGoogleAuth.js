@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ANDROID_CLIENT_ID } from '@env';
+import { ANDROID_CLIENT_ID, ANDROID_STANDALONE_CLIENT_ID } from '@env';
 import * as Google from 'expo-google-app-auth';
 import useSecureStore from './useSecureStore';
 
@@ -37,7 +37,7 @@ function useGoogleAuth() {
         // iosClientId: `<YOUR_IOS_CLIENT_ID_FOR_EXPO>`,
         androidClientId: ANDROID_CLIENT_ID,
         // iosStandaloneAppClientId: `<YOUR_IOS_CLIENT_ID>`,
-        // androidStandaloneAppClientId: `<YOUR_ANDROID_CLIENT_ID>`,
+        androidStandaloneAppClientId: ANDROID_STANDALONE_CLIENT_ID,
         scopes,
       });
 
