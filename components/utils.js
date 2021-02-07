@@ -1,11 +1,20 @@
 import { colors } from './constants';
 
-export function priceColor(v, defaultColor) {
-  const f = parseFloat(v.slice(1));
-  if (f === 0) {
+export function unsetColor(v, defaultColor) {
+  if (v === 0) {
     return colors.unset;
   }
   return defaultColor;
+}
+
+const warningPrecentage = 0.3;
+
+export function warningColor(v, total, color) {
+  if (v / total <= warningPrecentage) {
+    return colors.warning;
+  }
+
+  return color;
 }
 
 export function formatDate(d) {

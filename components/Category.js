@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 
 import TransactionForm from './TransactionForm';
+import Currency from './Currency';
 
 import { colors } from './constants';
 
@@ -40,21 +41,24 @@ function Amounts({ item }) {
     <View style={styles.Amounts}>
       <View style={styles.Amount}>
         <Text>Budgeted</Text>
-        <Text style={[styles.AmountValue, styles.BudgetedAmount]}>
-          {item.budgeted}
-        </Text>
+        <Currency
+          style={[styles.AmountValue, styles.BudgetedAmount]}
+          value={item.budgetedTotal}
+        />
       </View>
       <View style={styles.Amount}>
         <Text>Available</Text>
-        <Text style={[styles.AmountValue, styles.AvailableAmount]}>
-          {item.available}
-        </Text>
+        <Currency
+          style={[styles.AmountValue, styles.AvailableAmount]}
+          value={item.available}
+        />
       </View>
       <View style={styles.Amount}>
         <Text>Activity</Text>
-        <Text style={[styles.AmountValue, styles.ActivityAmount]}>
-          {item.activity}
-        </Text>
+        <Currency
+          style={[styles.AmountValue, styles.ActivityAmount]}
+          value={item.activity}
+        />
       </View>
     </View>
   );

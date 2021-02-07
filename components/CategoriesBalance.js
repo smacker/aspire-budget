@@ -1,15 +1,16 @@
 import React, { useContext } from 'react';
-import { StyleSheet, View, FlatList, Text, RefreshControl } from 'react-native';
+import { StyleSheet, View, FlatList, Text } from 'react-native';
 
 import { ListItem } from 'react-native-elements';
 
 import Retry from './Retry';
+import Currency from './Currency';
 
 import useAsync from '../state/useAsync';
 import { ApiContext } from '../state/apiContext';
 
 import { colors } from './constants';
-import { priceColor } from './utils';
+import { unsetColor, warningColor } from './utils';
 
 const styles = StyleSheet.create({
   Row: {
@@ -38,10 +39,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   BudgetedValue: (v) => ({
-    color: priceColor(v, colors.budgeted),
+    color: unsetColor(v, colors.budgeted),
   }),
-  AvailableValue: (v) => ({
-    color: priceColor(v, colors.available),
+  AvailableValue: (v, total) => ({
+    color: unsetColor(v, warningColor(v, total, colors.available)),
+  }),
+  ActivityValue: (v) => ({
+    color: unsetColor(v, colors.activity),
   }),
 });
 
@@ -53,41 +57,54 @@ function Row({ item, onPress }) {
   return (
     <ListItem
       bottomDivider
-      containerStyle={[styles.Row, item.group ? styles.RowGroup : null]}
+      containerStyle={[styles.Row, item.isGroup ? styles.RowGroup : null]}
       onPress={onPress}
     >
       <View style={styles.Name}>
         <Text
           numberOfLines={1}
           ellipsizeMode="tail"
-          style={item.group ? styles.GroupText : null}
+          style={item.isGroup ? styles.GroupText : null}
         >
           {item.name}
         </Text>
       </View>
       <View style={styles.Values}>
-        <Value>
-          {item.group ? <Text>budgeted</Text> : null}
-          <Text
-            style={[
-              styles.BudgetedValue(item.budgeted),
-              item.group ? styles.GroupText : null,
-            ]}
-          >
-            {item.budgeted}
-          </Text>
-        </Value>
-        <Value>
-          {item.group ? <Text>available</Text> : null}
-          <Text
-            style={[
-              styles.AvailableValue(item.available),
-              item.group ? styles.GroupText : null,
-            ]}
-          >
-            {item.available}
-          </Text>
-        </Value>
+        {!item.isCreditCard ? (
+          <Value>
+            {item.isGroup ? <Text>budgeted</Text> : null}
+            <Currency
+              style={[
+                styles.BudgetedValue(item.budgetedTotal),
+                item.isGroup ? styles.GroupText : null,
+              ]}
+              value={item.budgetedTotal}
+            />
+          </Value>
+        ) : null}
+        {!item.isCreditCard ? (
+          <Value>
+            {item.isGroup ? <Text>available</Text> : null}
+            <Currency
+              style={[
+                styles.AvailableValue(item.available, item.budgetedTotal),
+                item.isGroup ? styles.GroupText : null,
+              ]}
+              value={item.available}
+            />
+          </Value>
+        ) : (
+          <Value>
+            {item.isGroup ? <Text>activity</Text> : null}
+            <Currency
+              style={[
+                styles.ActivityValue(item.activity),
+                item.isGroup ? styles.GroupText : null,
+              ]}
+              value={item.activity}
+            />
+          </Value>
+        )}
       </View>
     </ListItem>
   );
