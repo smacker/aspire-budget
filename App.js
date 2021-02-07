@@ -5,6 +5,7 @@ import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
+import useBiometric from './state/useBiometric';
 import useGoogleAuth from './state/useGoogleAuth';
 import useSecureStore from './state/useSecureStore';
 import useAsync from './state/useAsync';
@@ -60,7 +61,7 @@ function MainScreen() {
     <Tab.Navigator
       initialRouteName="Dashboard"
       screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
+        tabBarIcon: function TabIcon({ color, size }) {
           let iconName;
 
           switch (route.name) {
@@ -90,6 +91,7 @@ function MainScreen() {
 
 function App() {
   const [isReady, setReady] = useState(false);
+  const [isBiometricSuccess] = useBiometric();
   const [authStatus, token, login, logout] = useGoogleAuth();
   const [isIdReady, spreadsheetId, setSpreadsheetId] = useSecureStore(
     'aspire-spreadsheet-id'
@@ -99,8 +101,8 @@ function App() {
   useEffect(() => {
     const init = async () => {
       await Font.loadAsync({
-        Roboto: require('native-base/Fonts/Roboto.ttf'),
-        Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf'),
+        Roboto: require('native-base/Fonts/Roboto.ttf'), // eslint-disable-line
+        Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf'), // eslint-disable-line
         ...Ionicons.font,
         ...MaterialIcons.font,
       });
@@ -113,6 +115,10 @@ function App() {
 
   // waiting for initial load
   if (!isReady || !authStatus || !isIdReady) {
+    return <AppLoading />;
+  }
+
+  if (!isBiometricSuccess) {
     return <AppLoading />;
   }
 

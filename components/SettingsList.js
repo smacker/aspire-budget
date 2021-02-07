@@ -4,20 +4,25 @@ import { FlatList } from 'react-native';
 import { ListItem, Divider } from 'react-native-elements';
 
 import { AuthContext } from '../state/authContext';
+import {
+  useBiometricIsAvailable,
+  useBiometricIsEnabled,
+  biometricSetEnable,
+} from '../state/useBiometric';
 
 function SettingsList() {
+  const [bioAvailableReady, bioAvailable] = useBiometricIsAvailable();
+  const [bioEnabledReady, bioEnabled] = useBiometricIsEnabled();
+
   const { logout } = useContext(AuthContext);
 
   const data = [
+    // FIXME: make human UI here
     {
       id: 'fingerprint',
-      text: 'Use fingerprint to log in',
-      disabled: true,
-    },
-    {
-      id: 'autolock',
-      text: 'Auto-lock security',
-      disabled: true,
+      text: 'Use fingerprint',
+      disabled: !bioAvailableReady || !bioEnabledReady || !bioAvailable,
+      onPress: () => biometricSetEnable(!bioEnabled),
     },
     {
       // https://www.reddit.com/r/aspirebudgeting/
