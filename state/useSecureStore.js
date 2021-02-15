@@ -1,18 +1,23 @@
 import { useState, useEffect } from 'react';
 import * as SecureStore from 'expo-secure-store';
 
-function useSecureStore(key) {
+function useSecureStore(key, isObject = false) {
   const [isReady, setIsReady] = useState(false);
   const [value, setValue] = useState(null);
 
   useEffect(() => {
+    if (isReady) {
+      return;
+    }
+
     const init = async () => {
-      const token = await SecureStore.getItemAsync(key);
-      setValue(token);
+      let storedValue = await SecureStore.getItemAsync(key);
+      setValue(isObject ? JSON.parse(storedValue) : storedValue);
       setIsReady(true);
     };
+
     init();
-  }, [key]);
+  }, [key, isObject, isReady]);
 
   return [
     isReady,
@@ -21,7 +26,7 @@ function useSecureStore(key) {
       setValue(value);
 
       if (value !== null) {
-        SecureStore.setItemAsync(key, value);
+        SecureStore.setItemAsync(key, isObject ? JSON.stringify(value) : value);
       } else {
         SecureStore.deleteItemAsync(key);
       }

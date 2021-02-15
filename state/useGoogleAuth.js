@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { ANDROID_CLIENT_ID, ANDROID_STANDALONE_CLIENT_ID } from '@env';
+import Constants from 'expo-constants';
 import * as Google from 'expo-google-app-auth';
 import useSecureStore from './useSecureStore';
 
-const accessTokenKey = 'aspire-access-token';
+const authKey = 'aspire-auth';
 const scopes = [
   'https://www.googleapis.com/auth/drive.readonly',
   'https://www.googleapis.com/auth/spreadsheets',
@@ -15,21 +16,35 @@ const stateAuthorized = 'authorized';
 
 function useGoogleAuth() {
   const [status, setStatus] = useState(null);
-  const [isTokenReady, token, setToken] = useSecureStore(accessTokenKey);
+  const [isAuthDataReady, authData, setAuthData] = useSecureStore(
+    authKey,
+    true
+  );
 
   useEffect(() => {
-    if (!isTokenReady) {
+    if (!isAuthDataReady) {
       return;
     }
 
-    if (token) {
-      setStatus(stateAuthorized);
-    } else {
+    if (!authData || !authData.accessToken) {
       setStatus(stateUnauthorized);
+      return;
     }
-  }, [isTokenReady]);
 
-  const login = async () => {
+    if (new Date().getTime() < authData.expiryTime) {
+      setStatus(stateAuthorized);
+      // it doesn't work properly due to https://github.com/facebook/react-native/issues/12981
+      const timeout = setTimeout(
+        () => refresh(),
+        authData.expiryTime - new Date().getTime()
+      );
+      return () => clearTimeout(timeout);
+    } else {
+      return refresh();
+    }
+  }, [isAuthDataReady, authData, refresh]);
+
+  const login = useCallback(async () => {
     setStatus(statePending);
 
     try {
@@ -42,23 +57,62 @@ function useGoogleAuth() {
       });
 
       if (resp.type === 'success') {
-        setToken(resp.accessToken);
+        setAuthData({
+          accessToken: resp.accessToken,
+          refreshToken: resp.refreshToken,
+          expiryTime: new Date().getTime() + 60 * 60 * 1000, // google tokens are valid for 1h
+        });
         setStatus(stateAuthorized);
       } else {
         setStatus(stateUnauthorized);
       }
     } catch (e) {
-      console.log('google log-in error', e);
+      console.error('google log-in error', e);
       setStatus(stateUnauthorized);
     }
-  };
+  }, [setStatus, setAuthData]);
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     setStatus(stateUnauthorized);
-    setToken(null);
-  };
+    setAuthData(null);
+  }, [setStatus, setAuthData]);
 
-  return [status, token, login, logout];
+  const refresh = useCallback(async () => {
+    setStatus(statePending);
+
+    const clientId =
+      Constants.appOwnership === 'expo'
+        ? ANDROID_CLIENT_ID
+        : ANDROID_STANDALONE_CLIENT_ID;
+    const resp = await fetch(
+      `https://oauth2.googleapis.com/token?client_id=${clientId}&refresh_token=${authData.refreshToken}&grant_type=refresh_token`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      }
+    );
+
+    if (resp.status != 200) {
+      console.error(`google refresh token status code ${resp.status}`);
+      await logout();
+      return;
+    }
+
+    const {
+      access_token: accessToken,
+      expires_in: expiryTime,
+    } = await resp.json();
+    setAuthData({
+      ...authData,
+      accessToken: accessToken,
+      expiryTime: new Date().getTime() + expiryTime * 1000,
+    });
+    setStatus(stateAuthorized);
+  }, [authData, setAuthData, logout]);
+
+  return [status, authData && authData.accessToken, login, logout];
 }
 
 export default useGoogleAuth;
