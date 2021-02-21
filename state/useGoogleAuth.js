@@ -36,7 +36,7 @@ function useGoogleAuth() {
       return;
     }
 
-    return refresh();
+    refresh();
   }, [isAuthDataReady, authData, refresh]);
 
   const login = useCallback(async () => {
@@ -89,7 +89,7 @@ function useGoogleAuth() {
       }
     );
 
-    if (resp.status != 200) {
+    if (resp.status !== 200) {
       console.error(`google refresh token status code ${resp.status}`);
       await logout();
       return;
@@ -107,7 +107,7 @@ function useGoogleAuth() {
     setStatus(stateAuthorized);
   }, [authData, setAuthData, logout]);
 
-  return [status, authData && authData.accessToken, login, logout];
+  return [status, authData && authData.accessToken, login, logout, refresh];
 }
 
 export default useGoogleAuth;

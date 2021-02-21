@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import * as SecureStore from 'expo-secure-store';
 
 function useSecureStore(key, isObject = false) {
@@ -19,9 +19,7 @@ function useSecureStore(key, isObject = false) {
     init();
   }, [key, isObject, isReady]);
 
-  return [
-    isReady,
-    value,
+  const setValueExported = useCallback(
     (value) => {
       setValue(value);
 
@@ -31,7 +29,10 @@ function useSecureStore(key, isObject = false) {
         SecureStore.deleteItemAsync(key);
       }
     },
-  ];
+    [key, isObject]
+  );
+
+  return [isReady, value, setValueExported];
 }
 
 export default useSecureStore;

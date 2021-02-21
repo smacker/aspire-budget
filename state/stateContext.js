@@ -14,16 +14,14 @@ import {
 
 export const StateContext = createContext({});
 
-function useApiCall(fn, token, spreadsheetId) {
-  // FIXME maybe we can try to refresh the token here? otherwise logout
-  const onUnauthorizedError = (e) => {
-    console.error(e);
-  };
+function useApiCall(fn, options) {
+  const { token, spreadsheetId, onUnauthorizedError } = options;
 
   return useCallback(
     (...params) => {
       return fn(token, spreadsheetId, ...params).catch((e) => {
         if (e.type === 'status' && e.status === 401) {
+          console.error(e);
           onUnauthorizedError(e);
         }
 
@@ -34,20 +32,19 @@ function useApiCall(fn, token, spreadsheetId) {
         throw e;
       });
     },
-    [fn, token, spreadsheetId]
+    [fn, token, spreadsheetId, onUnauthorizedError]
   );
 }
 
 export const StateProvider = (props) => {
-  const [authStatus, token, login, logout] = useGoogleAuth();
+  const [authStatus, token, login, logout, refresh] = useGoogleAuth();
   const [isIdReady, spreadsheetId, setSpreadsheetId] = useSecureStore(
     'aspire-spreadsheet-id'
   );
 
-  const verify = useAsync(
-    useApiCall(verifySpreadSheet, token, spreadsheetId),
-    false
-  );
+  const useApiCallOpts = { token, spreadsheetId, onUnauthorizedError: refresh };
+
+  const verify = useAsync(useApiCall(verifySpreadSheet, useApiCallOpts), false);
   // to avoid warning as linter of useEffect doesn't understand verify.execute
   const verifyExecute = verify.execute;
   // consider failed validation as an error
@@ -75,21 +72,15 @@ export const StateProvider = (props) => {
     verifyExecute();
   }, [spreadsheetId, verifyExecute]);
 
-  const stats = useAsync(
-    useApiCall(fetchMainStats, token, spreadsheetId),
-    false
-  );
+  const stats = useAsync(useApiCall(fetchMainStats, useApiCallOpts), false);
 
   const categories = useAsync(
-    useApiCall(fetchCategoriesBalance, token, spreadsheetId),
+    useApiCall(fetchCategoriesBalance, useApiCallOpts),
     false
   );
-  const balances = useAsync(
-    useApiCall(fetchBalances, token, spreadsheetId),
-    false
-  );
+  const balances = useAsync(useApiCall(fetchBalances, useApiCallOpts), false);
   const transactionAccounts = useAsync(
-    useApiCall(fetchTransactionAccounts, token, spreadsheetId),
+    useApiCall(fetchTransactionAccounts, useApiCallOpts),
     false
   );
 
@@ -112,8 +103,11 @@ export const StateProvider = (props) => {
     transactionAccounts,
 
     // methods that don't need global state
-    fetchSpreadSheets: useApiCall(fetchSpreadSheets, token),
-    addTransaction: useApiCall(addTransaction, token, spreadsheetId),
+    fetchSpreadSheets: useApiCall(fetchSpreadSheets, {
+      token,
+      onUnauthorizedError: refresh,
+    }),
+    addTransaction: useApiCall(addTransaction, useApiCallOpts),
   };
 
   return (
