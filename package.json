@@ -5,7 +5,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "eject": "expo eject"
+    "eject": "expo eject",
+    "prepare": "patch-package"
   },
   "dependencies": {
     "@expo/webpack-config": "~0.12.45",
@@ -42,7 +43,9 @@
     "babel-preset-expo": "8.3.0",
     "eslint": "^7.19.0",
     "eslint-plugin-react": "^7.22.0",
-    "eslint-plugin-react-hooks": "^4.2.0"
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "patch-package": "^6.2.2",
+    "postinstall-prepare": "^1.0.1"
   },
   "private": true
 }
