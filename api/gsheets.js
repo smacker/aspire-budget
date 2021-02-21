@@ -8,6 +8,17 @@ function _fetch(token, url, params = {}) {
       Authorization: `Bearer ${token}`,
     },
     ...params,
+  }).then((resp) => {
+    console.debug(
+      `fetch ${url}\nparams: ${JSON.stringify(params)}\nresp:\n${JSON.stringify(
+        {
+          status: resp.status,
+          headers: resp.headers,
+        }
+      )}`
+    );
+
+    return resp;
   });
 }
 
