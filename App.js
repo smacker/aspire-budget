@@ -6,55 +6,16 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import useBiometric from './state/useBiometric';
-import useGoogleAuth from './state/useGoogleAuth';
-import useSecureStore from './state/useSecureStore';
-import useAsync from './state/useAsync';
-import { AuthProvider } from './state/authContext';
-import { ApiProvider, ApiContext } from './state/apiContext';
+import { StateProvider, StateContext } from './state/stateContext';
 
 import LoginScreen from './screens/LoginScreen';
 import SpreadSheetsScreen from './screens/SpreadSheetsScreen';
 import DashboardScreen from './screens/DashboardScreen';
 import BalancesScreen from './screens/BalancesScreen';
 import SettingsScreen from './screens/SettingsScreen';
-import Loading from './components/Loading';
 import SnackBar from 'react-native-snackbar-component';
 
 const Tab = createBottomTabNavigator();
-
-// This component cases bad UX when incorrect item chosen
-// - it shows empty loading (without header)
-// - header is rendered but new loader appears inside list of items
-function SpreadsheetValidator({ setSpreadsheetId }) {
-  const { verifySpreadSheet } = useContext(ApiContext);
-  const { status, value, error } = useAsync(verifySpreadSheet);
-  const [visible, setVisible] = useState(true);
-
-  if (status === 'pending') {
-    return <Loading size="large" fill />;
-  }
-
-  if (error || !value) {
-    return [
-      <SpreadSheetsScreen
-        onSelect={(id) => {
-          setSpreadsheetId(id);
-          setVisible(true);
-        }}
-        key="screen"
-      />,
-      <SnackBar
-        visible={visible}
-        key="notification"
-        textMessage="Incorrect file, please try another one"
-        actionHandler={() => setVisible(false)}
-        backgroundColor="#b00020"
-      ></SnackBar>,
-    ];
-  }
-
-  return <MainScreen />;
-}
 
 function MainScreen() {
   return (
@@ -89,13 +50,50 @@ function MainScreen() {
   );
 }
 
+function SpreadSheetsSelector({ spreadsheet }) {
+  const [visible, setVisible] = useState(!!spreadsheet.error);
+
+  useEffect(() => {
+    setVisible(!!spreadsheet.error);
+  }, [spreadsheet.error]);
+
+  return [
+    <SpreadSheetsScreen
+      onSelect={spreadsheet.setValue}
+      validating={spreadsheet.status === 'pending'}
+      key="screen"
+    />,
+    <SnackBar
+      visible={visible}
+      key="notification"
+      textMessage="Incorrect file, please try another one"
+      actionHandler={() => setVisible(false)}
+      backgroundColor="#b00020"
+    ></SnackBar>,
+  ];
+}
+
+function ScreenSelector() {
+  const { authStatus, login, spreadsheet } = useContext(StateContext);
+
+  if (!authStatus) {
+    return <AppLoading />;
+  }
+
+  if (authStatus !== 'authorized') {
+    return <LoginScreen authStatus={authStatus} login={login} />;
+  }
+
+  if (spreadsheet.status !== 'success') {
+    return <SpreadSheetsSelector spreadsheet={spreadsheet} />;
+  }
+
+  return <MainScreen />;
+}
+
 function App() {
   const [isReady, setReady] = useState(false);
   const [isBiometricSuccess] = useBiometric();
-  const [authStatus, token, login, logout] = useGoogleAuth();
-  const [isIdReady, spreadsheetId, setSpreadsheetId] = useSecureStore(
-    'aspire-spreadsheet-id'
-  );
 
   // init the app
   useEffect(() => {
@@ -113,42 +111,17 @@ function App() {
     init();
   }, []);
 
-  // waiting for initial load
-  if (!isReady || !authStatus || !isIdReady) {
+  // waiting for initial load and biometric login if enabled
+  if (!isReady || !isBiometricSuccess) {
     return <AppLoading />;
-  }
-
-  if (!isBiometricSuccess) {
-    return <AppLoading />;
-  }
-
-  // Login screen
-  if (authStatus !== 'authorized') {
-    return <LoginScreen authStatus={authStatus} login={login} />;
   }
 
   return (
-    <AuthProvider
-      login={login}
-      logout={() => {
-        logout();
-        setSpreadsheetId(null);
-      }}
-    >
-      <ApiProvider
-        token={token}
-        spreadsheetId={spreadsheetId}
-        onUnauthorizedError={logout}
-      >
-        <NavigationContainer>
-          {spreadsheetId ? (
-            <SpreadsheetValidator setSpreadsheetId={setSpreadsheetId} />
-          ) : (
-            <SpreadSheetsScreen onSelect={setSpreadsheetId} />
-          )}
-        </NavigationContainer>
-      </ApiProvider>
-    </AuthProvider>
+    <StateProvider>
+      <NavigationContainer>
+        <ScreenSelector />
+      </NavigationContainer>
+    </StateProvider>
   );
 }
 

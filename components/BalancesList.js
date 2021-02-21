@@ -1,16 +1,18 @@
 import React, { useContext } from 'react';
-import { View, FlatList, Text } from 'react-native';
+import { View, FlatList } from 'react-native';
 
 import { ListItem } from 'react-native-elements';
 
 import Retry from './Retry';
 
-import useAsync from '../state/useAsync';
-import { ApiContext } from '../state/apiContext';
+import { useRequireAsync } from '../state/useAsync';
+import { StateContext } from '../state/stateContext';
 
 function BalancesList() {
-  const { fetchBalances } = useContext(ApiContext);
-  const { status, value, execute } = useAsync(fetchBalances);
+  const { balances } = useContext(StateContext);
+  const { status, value, execute } = balances;
+
+  useRequireAsync(status, execute);
 
   if (status === 'error') {
     return <Retry action={execute} />;

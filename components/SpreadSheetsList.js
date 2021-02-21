@@ -7,13 +7,14 @@ import Loading from './Loading';
 import Retry from './Retry';
 
 import useAsync from '../state/useAsync';
-import { ApiContext } from '../state/apiContext';
+import { StateContext } from '../state/stateContext';
 
-function SpreadSheetsList({ onSelect }) {
-  const { fetchSpreadSheets } = useContext(ApiContext);
-  const { status, value, error, execute } = useAsync(fetchSpreadSheets);
+// show a loader inside the component while validating to avoid ugly UI re-draws
+function SpreadSheetsList({ onSelect, validating }) {
+  const { fetchSpreadSheets } = useContext(StateContext);
+  const { status, value, execute } = useAsync(fetchSpreadSheets);
 
-  if (status === 'pending') {
+  if (status === 'pending' || validating) {
     return <Loading size="large" fill />;
   }
 

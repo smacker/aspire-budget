@@ -3,18 +3,17 @@ import { FlatList } from 'react-native';
 
 import { ListItem, Divider } from 'react-native-elements';
 
-import { AuthContext } from '../state/authContext';
 import {
   useBiometricIsAvailable,
   useBiometricIsEnabled,
   biometricSetEnable,
 } from '../state/useBiometric';
+import { StateContext } from '../state/stateContext';
 
 function SettingsList() {
   const [bioAvailableReady, bioAvailable] = useBiometricIsAvailable();
   const [bioEnabledReady, bioEnabled] = useBiometricIsEnabled();
-
-  const { logout } = useContext(AuthContext);
+  const { logout } = useContext(StateContext);
 
   const data = [
     // FIXME: make human UI here

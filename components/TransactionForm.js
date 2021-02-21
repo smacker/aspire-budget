@@ -5,20 +5,28 @@ import { ListItem, Button, Text, BottomSheet } from 'react-native-elements';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useForm, Controller } from 'react-hook-form';
 
-import useAsync from '../state/useAsync';
-import { ApiContext } from '../state/apiContext';
+import { useRequireAsync } from '../state/useAsync';
+import { StateContext } from '../state/stateContext';
 
 import { colors } from './constants';
 import { formatDate } from './utils';
 
 function TransactionForm({ category, back }) {
-  const { fetchTransactionAccounts, addTransaction } = useContext(ApiContext);
-  // api call for accounts list
+  const {
+    transactionAccounts,
+    addTransaction,
+    categories,
+    balances,
+  } = useContext(StateContext);
   const {
     status: accountsStatus,
     value: accounts,
-    error: accountsError,
-  } = useAsync(fetchTransactionAccounts);
+    execute: accountsExecute,
+  } = transactionAccounts;
+  const { status: categoriesStatus, execute: categoriesExecute } = categories;
+  const { status: balancesStatus, execute: balancesExecute } = balances;
+
+  useRequireAsync(accountsStatus, accountsExecute);
 
   // setup form
   const defaultValues = {
@@ -62,7 +70,11 @@ function TransactionForm({ category, back }) {
       setServerError('Could not submit transaction. Please try again.');
     }
 
-    back();
+    // refresh global cached data
+    if (categoriesStatus !== 'idle') categoriesExecute();
+    if (balancesStatus !== 'idle') balancesExecute();
+
+    await back();
   };
 
   return (

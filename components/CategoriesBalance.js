@@ -6,8 +6,8 @@ import { ListItem } from 'react-native-elements';
 import Retry from './Retry';
 import Currency from './Currency';
 
-import useAsync from '../state/useAsync';
-import { ApiContext } from '../state/apiContext';
+import { useRequireAsync } from '../state/useAsync';
+import { StateContext } from '../state/stateContext';
 
 import { colors } from './constants';
 import { unsetColor, warningColor } from './utils';
@@ -111,8 +111,10 @@ function Row({ item, onPress }) {
 }
 
 function CategoriesBalance({ navigation }) {
-  const { fetchCategoriesBalance } = useContext(ApiContext);
-  const { status, value, execute } = useAsync(fetchCategoriesBalance);
+  const { categories } = useContext(StateContext);
+  const { status, value, execute } = categories;
+
+  useRequireAsync(status, execute);
 
   if (status === 'error') {
     return <Retry action={execute} />;
