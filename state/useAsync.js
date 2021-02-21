@@ -31,3 +31,17 @@ function useAsync(asyncFunction, immediate = true) {
 }
 
 export default useAsync;
+
+export function useRequireAsync(status, execute) {
+  useEffect(() => {
+    if (status !== 'idle') return;
+    execute();
+  }, [status, execute]);
+}
+
+export function useRefreshIfNeeded(status, execute) {
+  useEffect(() => {
+    if (status === 'idle') return;
+    execute();
+  }, [status, execute]);
+}
