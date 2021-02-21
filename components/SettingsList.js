@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { FlatList, Switch } from 'react-native';
-
+import * as Linking from 'expo-linking';
 import { ListItem, Divider } from 'react-native-elements';
 
 import {
@@ -25,10 +25,11 @@ function SettingsList() {
       },
     },
     {
-      // https://www.reddit.com/r/aspirebudgeting/
       id: 'reddit',
       text: 'Ask for help on reddit',
-      disabled: true,
+      onPress: () => {
+        Linking.openURL('https://www.reddit.com/r/aspirebudgeting/');
+      },
     },
     {
       id: 'divider',
