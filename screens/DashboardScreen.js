@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import CategoriesBalance from '../components/CategoriesBalance';
 import Category from '../components/Category';
+import Header from '../components/HomeHeader';
 
 const Stack = createStackNavigator();
 
@@ -13,6 +14,7 @@ function DashboardScreen() {
       <Stack.Screen
         options={{
           title: 'Dashboard',
+          headerTitle: (props) => <Header {...props} />,
         }}
         name="Categories"
         component={CategoriesBalance}

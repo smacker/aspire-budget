@@ -5,6 +5,7 @@ import useAsync from './useAsync';
 import {
   verifySpreadSheet,
   fetchSpreadSheets,
+  fetchMainStats,
   fetchCategoriesBalance,
   fetchBalances,
   fetchTransactionAccounts,
@@ -74,6 +75,11 @@ export const StateProvider = (props) => {
     verifyExecute();
   }, [spreadsheetId, verifyExecute]);
 
+  const stats = useAsync(
+    useApiCall(fetchMainStats, token, spreadsheetId),
+    false
+  );
+
   const categories = useAsync(
     useApiCall(fetchCategoriesBalance, token, spreadsheetId),
     false
@@ -100,6 +106,7 @@ export const StateProvider = (props) => {
     spreadsheet,
 
     // global state
+    stats,
     categories,
     balances,
     transactionAccounts,

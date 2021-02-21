@@ -171,3 +171,20 @@ export async function addTransaction(token, spreadsheetId, data) {
 
   return resp.status === 200;
 }
+
+export async function fetchMainStats(token, spreadsheetId) {
+  const resp = await _fetch(
+    token,
+    `${sheetsBaseURL}/${spreadsheetId}/values/Dashboard!H2:O2?valueRenderOption=UNFORMATTED_VALUE`
+  );
+
+  const data = await resp.json();
+  const values = (data && data.values && data.values[0]) || {};
+
+  return {
+    toBudget: values[0],
+    spent: values[1],
+    budgeted: values[3],
+    pending: values[7],
+  };
+}
