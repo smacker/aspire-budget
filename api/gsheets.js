@@ -1,25 +1,33 @@
+import { formatDate } from '../helpers/date';
+
 const driveBaseURL = 'https://www.googleapis.com/drive/v3';
 const sheetsBaseURL = 'https://sheets.googleapis.com/v4/spreadsheets';
 
-function _fetch(token, url, params = {}) {
-  return fetch(url, {
+async function _fetch(token, url, params = {}) {
+  const resp = await fetch(url, {
     headers: {
       'Content-Type': 'application/json; charset=UTF-8',
       Authorization: `Bearer ${token}`,
     },
     ...params,
-  }).then((resp) => {
-    console.debug(
-      `fetch ${url}\nparams: ${JSON.stringify(params)}\nresp:\n${JSON.stringify(
-        {
-          status: resp.status,
-          headers: resp.headers,
-        }
-      )}`
-    );
-
-    return resp;
   });
+
+  console.debug(
+    `fetch ${url}\nparams: ${JSON.stringify(params)}\nresp:\n${JSON.stringify({
+      status: resp.status,
+      headers: resp.headers,
+    })}`
+  );
+
+  if (resp.status !== 200) {
+    throw {
+      type: 'status',
+      status: resp.status,
+      data: await resp.json(),
+    };
+  }
+
+  return resp;
 }
 
 export async function fetchSpreadSheets(token) {
@@ -38,14 +46,6 @@ export async function verifySpreadSheet(token, spreadsheetId) {
   );
 
   const data = await resp.json();
-  if (resp.status !== 200) {
-    throw {
-      type: 'status',
-      status: resp.status,
-      data,
-    };
-  }
-
   if (!data || !data.values || !data.values.length) {
     return false;
   }
@@ -60,14 +60,6 @@ export async function fetchCategoriesBalance(token, spreadsheetId) {
   );
 
   const data = await resp.json();
-  if (resp.status !== 200) {
-    throw {
-      type: 'status',
-      status: resp.status,
-      data,
-    };
-  }
-
   if (!data || !data.values) {
     return [];
   }
@@ -145,14 +137,6 @@ export async function fetchTransactionAccounts(token, spreadsheetId) {
   );
 
   const data = await resp.json();
-  if (resp.status !== 200) {
-    throw {
-      type: 'status',
-      status: resp.status,
-      data,
-    };
-  }
-
   if (!data || !data.values) {
     return [];
   }
@@ -162,7 +146,6 @@ export async function fetchTransactionAccounts(token, spreadsheetId) {
 
 export async function addTransaction(token, spreadsheetId, data) {
   const body = {
-    //"range": string,
     majorDimension: 'ROWS',
     values: [
       [
@@ -186,21 +169,5 @@ export async function addTransaction(token, spreadsheetId, data) {
     }
   );
 
-  // FIXME add some validation here
-  return true;
-}
-
-function formatDate(d) {
-  const yyyy = d.getFullYear();
-  const mm = padZero(d.getMonth() + 1);
-  const dd = padZero(d.getDate());
-  return `${dd}/${mm}/${yyyy}`;
-}
-
-function padZero(v) {
-  if (('' + v).length < 2) {
-    return '0' + v;
-  }
-
-  return v;
+  return resp.status === 200;
 }

@@ -9,7 +9,7 @@ import { useRequireAsync } from '../state/useAsync';
 import { StateContext } from '../state/stateContext';
 
 import { colors } from './constants';
-import { formatDate } from './utils';
+import { formatDate } from '../helpers/date';
 
 function TransactionForm({ category, back }) {
   const {
