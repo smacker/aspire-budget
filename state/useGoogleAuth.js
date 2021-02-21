@@ -33,15 +33,10 @@ function useGoogleAuth() {
 
     if (new Date().getTime() < authData.expiryTime) {
       setStatus(stateAuthorized);
-      // it doesn't work properly due to https://github.com/facebook/react-native/issues/12981
-      const timeout = setTimeout(
-        () => refresh(),
-        authData.expiryTime - new Date().getTime()
-      );
-      return () => clearTimeout(timeout);
-    } else {
-      return refresh();
+      return;
     }
+
+    return refresh();
   }, [isAuthDataReady, authData, refresh]);
 
   const login = useCallback(async () => {
