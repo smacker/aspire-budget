@@ -50,11 +50,17 @@ export function useBiometricIsEnabled() {
     });
   }, [isReady]);
 
-  return [isReady, enabled];
-  //return [true, true];
+  return [
+    isReady,
+    enabled,
+    (value) => {
+      setEnabled(value);
+      biometricSetEnable(value);
+    },
+  ];
 }
 
-export async function biometricSetEnable(value) {
+async function biometricSetEnable(value) {
   if (value) {
     SecureStore.setItemAsync(biometricKey, 'yes');
   } else {

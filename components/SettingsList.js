@@ -1,27 +1,28 @@
 import React, { useContext } from 'react';
-import { FlatList } from 'react-native';
+import { FlatList, Switch } from 'react-native';
 
 import { ListItem, Divider } from 'react-native-elements';
 
 import {
   useBiometricIsAvailable,
   useBiometricIsEnabled,
-  biometricSetEnable,
 } from '../state/useBiometric';
 import { StateContext } from '../state/stateContext';
 
 function SettingsList() {
   const [bioAvailableReady, bioAvailable] = useBiometricIsAvailable();
-  const [bioEnabledReady, bioEnabled] = useBiometricIsEnabled();
+  const [bioEnabledReady, bioEnabled, bioSetEnable] = useBiometricIsEnabled();
   const { logout } = useContext(StateContext);
 
   const data = [
-    // FIXME: make human UI here
     {
       id: 'fingerprint',
       text: 'Use fingerprint',
       disabled: !bioAvailableReady || !bioEnabledReady || !bioAvailable,
-      onPress: () => biometricSetEnable(!bioEnabled),
+      switch: {
+        value: bioEnabled,
+        onChange: () => bioSetEnable(!bioEnabled),
+      },
     },
     {
       // https://www.reddit.com/r/aspirebudgeting/
@@ -63,6 +64,12 @@ function SettingsList() {
               <ListItem.Title>{item.text}</ListItem.Title>
             </ListItem.Content>
             {item.chevron ? <ListItem.Chevron /> : null}
+            {item.switch ? (
+              <Switch
+                value={item.switch.value}
+                onValueChange={item.switch.onChange}
+              />
+            ) : null}
           </ListItem>
         );
       }}
