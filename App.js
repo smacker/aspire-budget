@@ -107,8 +107,6 @@ function App() {
   useEffect(() => {
     const init = async () => {
       await Font.loadAsync({
-        Roboto: require('native-base/Fonts/Roboto.ttf'), // eslint-disable-line
-        Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf'), // eslint-disable-line
         ...Ionicons.font,
         ...MaterialIcons.font,
       });
