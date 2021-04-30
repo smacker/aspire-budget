@@ -49,11 +49,11 @@ function TransactionForm({ category, back }) {
     defaultValues,
   });
   React.useEffect(() => {
-    register({ name: 'date' }, { required: true });
-    register({ name: 'account' }, { required: true });
-    register({ name: 'category' }, { required: true });
+    register('date', { required: true });
+    register('account', { required: true });
+    register('category', { required: true });
   }, [register]);
-  const { date, account, inflow } = watch();
+  const [date, account, inflow] = watch(['date', 'account', 'inflow']);
 
   // setup popups state
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -84,7 +84,7 @@ function TransactionForm({ category, back }) {
           <ListItem.Content style={styles.FormRow}>
             <Controller
               control={control}
-              render={({ onChange, value }) => (
+              render={({ field: { onChange, value } }) => (
                 <Switch
                   thumbColor={inflow ? colors.available : colors.activity}
                   value={value}
@@ -95,7 +95,7 @@ function TransactionForm({ category, back }) {
             />
             <Controller
               control={control}
-              render={({ onChange, onBlur, value }) => (
+              render={({ field: { onChange, onBlur, value } }) => (
                 <View style={styles.AmountWrapper}>
                   {value ? (
                     <Text style={styles.Amount(inflow)}>
@@ -154,7 +154,7 @@ function TransactionForm({ category, back }) {
           <ListItem.Content style={[styles.FormRow, styles.MemoRow]}>
             <Controller
               control={control}
-              render={({ onChange, onBlur, value }) => (
+              render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
                   placeholder="Memo"
                   onBlur={onBlur}
