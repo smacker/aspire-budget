@@ -75,13 +75,19 @@ function SpreadSheetsSelector({ spreadsheet }) {
 
 function ScreenSelector() {
   const { authStatus, login, spreadsheet } = useContext(StateContext);
-
   // for initial loading we need to show full screen loader instead of a loader inside sheet selector
-  if (!authStatus || !spreadsheet.status) {
+  const [isFirstLoad, setFirstLoad] = useState(true);
+
+  if (
+    !authStatus ||
+    !spreadsheet.status ||
+    (isFirstLoad && spreadsheet.status === 'pending')
+  ) {
     return <AppLoading />;
   }
+  // if we got here it is not the first load anymore
+  if (isFirstLoad) setFirstLoad(false);
 
-  // it is okay to show LoginScreen even during initial loading as it will just display spinner
   if (authStatus !== 'authorized') {
     return <LoginScreen authStatus={authStatus} login={login} />;
   }
