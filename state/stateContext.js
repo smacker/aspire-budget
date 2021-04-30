@@ -1,9 +1,8 @@
-import React, { createContext, useCallback, useEffect } from 'react';
+import React, { createContext, useCallback } from 'react';
 import useGoogleAuth from './useGoogleAuth';
-import useSecureStore from './useSecureStore';
+import useSpreadsheet from './useSpreadsheet';
 import useAsync from './useAsync';
 import {
-  verifySpreadSheet,
   fetchSpreadSheets,
   fetchMainStats,
   fetchCategoriesBalance,
@@ -37,43 +36,28 @@ function useApiCall(fn, options) {
 }
 
 export const StateProvider = (props) => {
+  // the hook automatically tries to refresh token if credentials exist in local storage
   const [authStatus, token, login, logout, refresh] = useGoogleAuth();
-  const [isIdReady, spreadsheetId, setSpreadsheetId] = useSecureStore(
-    'aspire-spreadsheet-id'
-  );
+  // auto validate correctness of spreadsheet id as long as it is set
+  const [
+    spreadsheetStatus,
+    spreadsheetId,
+    setSpreadsheetId,
+    spreadsheetErrorMsg,
+    spreadsheetVerify,
+  ] = useSpreadsheet(token);
 
-  const useApiCallOpts = { token, spreadsheetId, onUnauthorizedError: refresh };
-
-  const verify = useAsync(useApiCall(verifySpreadSheet, useApiCallOpts), false);
-  // to avoid warning as linter of useEffect doesn't understand verify.execute
-  const verifyExecute = verify.execute;
-  // consider failed validation as an error
-  const spreadsheetError =
-    verify.status === 'success' && !verify.value
-      ? 'spreadsheet is not valid'
-      : null;
-  // map status taking into account async store and error logic above
-  const spreadsheetStatus = !isIdReady
-    ? 'pending'
-    : spreadsheetError
-    ? 'error'
-    : verify.status;
   const spreadsheet = {
     status: spreadsheetStatus,
     value: spreadsheetId,
     setValue: setSpreadsheetId,
-    error: verify.error ? verify.error : spreadsheetError,
-    execute: verify.execute,
+    error: spreadsheetErrorMsg,
+    execute: spreadsheetVerify,
   };
 
-  // validate spreadsheet on init, id change, token change (execute depends on the token)
-  useEffect(() => {
-    if (!spreadsheetId) return;
-    verifyExecute();
-  }, [spreadsheetId, verifyExecute]);
-
+  // define data getter (no side effects)
+  const useApiCallOpts = { token, spreadsheetId, onUnauthorizedError: refresh };
   const stats = useAsync(useApiCall(fetchMainStats, useApiCallOpts), false);
-
   const categories = useAsync(
     useApiCall(fetchCategoriesBalance, useApiCallOpts),
     false
