@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
 function Loading({ size = 'small', fill = false }) {
   return (
     <View style={[styles.container, styles.horizontal, fill && styles.fill]}>
-      <ActivityIndicator size={size} />
+      <ActivityIndicator size={size} color="#000000" />
     </View>
   );
 }
