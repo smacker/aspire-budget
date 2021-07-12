@@ -8,7 +8,7 @@ import Retry from './Retry';
 import { useRequireAsync } from '../state/useAsync';
 import { StateContext } from '../state/stateContext';
 
-function BalancesList() {
+function BalancesList({ navigation }) {
   const { balances } = useContext(StateContext);
   const { status, value, execute } = balances;
 
@@ -26,7 +26,10 @@ function BalancesList() {
       onRefresh={execute}
       renderItem={({ item }) => {
         return (
-          <ListItem bottomDivider>
+          <ListItem
+            bottomDivider
+            onPress={() => navigation.navigate('Account', item)}
+          >
             <ListItem.Content>
               <View
                 style={{

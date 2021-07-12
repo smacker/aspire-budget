@@ -69,7 +69,7 @@ function Category({ route, navigation }) {
     <View style={styles.Container}>
       <Amounts item={route.params} />
       <TransactionForm
-        category={route.params.name}
+        categoryInit={route.params.name}
         back={() => navigation.goBack()}
       />
     </View>

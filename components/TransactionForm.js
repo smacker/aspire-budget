@@ -11,13 +11,16 @@ import { StateContext } from '../state/stateContext';
 import { colors } from './constants';
 import { formatDate } from '../helpers/date';
 
-function TransactionForm({ category, back }) {
-  const {
-    transactionAccounts,
-    addTransaction,
-    categories,
-    balances,
-  } = useContext(StateContext);
+const accountTxCategories = [
+  'Available to budget',
+  '↕️ Account Transfer',
+  '🔢 Balance Adjustment',
+  '➡️ Starting Balance',
+];
+
+function TransactionForm({ categoryInit = '', accountInit = '', back }) {
+  const { transactionAccounts, addTransaction, categories, balances } =
+    useContext(StateContext);
   const {
     status: accountsStatus,
     value: accounts,
@@ -31,33 +34,33 @@ function TransactionForm({ category, back }) {
   // setup form
   const defaultValues = {
     date: new Date(),
-    inflow: false,
+    inflow: categoryInit === '',
     amount: '',
-    category,
-    account: '',
+    category: categoryInit,
+    account: accountInit,
     memo: '',
   };
-  const {
-    control,
-    handleSubmit,
-    register,
-    watch,
-    setValue,
-    formState,
-  } = useForm({
-    mode: 'onChange',
-    defaultValues,
-  });
+  const { control, handleSubmit, register, watch, setValue, formState } =
+    useForm({
+      mode: 'onChange',
+      defaultValues,
+    });
   React.useEffect(() => {
     register('date', { required: true });
     register('account', { required: true });
     register('category', { required: true });
   }, [register]);
-  const [date, account, inflow] = watch(['date', 'account', 'inflow']);
+  const [date, category, account, inflow] = watch([
+    'date',
+    'category',
+    'account',
+    'inflow',
+  ]);
 
   // setup popups state
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showAccountsList, setShowAccountsList] = useState(false);
+  const [showCategoriesList, setShowCategoriesList] = useState(false);
 
   // form submit state
   const [serverError, setServerError] = useState(null);
@@ -76,6 +79,77 @@ function TransactionForm({ category, back }) {
 
     await back();
   };
+
+  // disabled={accountsStatus !== 'success'}
+  const accountItemComponent = (
+    <ListItem bottomDivider onPress={() => setShowAccountsList(true)}>
+      <ListItem.Content style={styles.FormRow}>
+        <Text>Account</Text>
+        <Text style={styles.DefaultValue(formState.dirtyFields.account)}>
+          {account || 'Select'}
+        </Text>
+      </ListItem.Content>
+      <ListItem.Chevron />
+    </ListItem>
+  );
+
+  const accountListComponent = (
+    <BottomSheet isVisible={showAccountsList}>
+      {(accounts || []).map((account, i) => (
+        <ListItem
+          key={i}
+          onPress={() => {
+            setShowAccountsList(false);
+            setValue('account', account, {
+              shouldValidate: true,
+              shouldDirty: true,
+            });
+          }}
+        >
+          <ListItem.Content>
+            <ListItem.Title>{account}</ListItem.Title>
+          </ListItem.Content>
+        </ListItem>
+      ))}
+    </BottomSheet>
+  );
+
+  const categoryItemComponent = (
+    <ListItem
+      bottomDivider
+      onPress={() => setShowCategoriesList(true)}
+      disabled={accountsStatus !== 'success'}
+    >
+      <ListItem.Content style={styles.FormRow}>
+        <Text>Category</Text>
+        <Text style={styles.DefaultValue(formState.dirtyFields.category)}>
+          {category || 'Select'}
+        </Text>
+      </ListItem.Content>
+      <ListItem.Chevron />
+    </ListItem>
+  );
+
+  const categoriesListComponent = (
+    <BottomSheet isVisible={showCategoriesList}>
+      {(accountTxCategories || []).map((category, i) => (
+        <ListItem
+          key={i}
+          onPress={() => {
+            setShowCategoriesList(false);
+            setValue('category', category, {
+              shouldValidate: true,
+              shouldDirty: true,
+            });
+          }}
+        >
+          <ListItem.Content>
+            <ListItem.Title>{category}</ListItem.Title>
+          </ListItem.Content>
+        </ListItem>
+      ))}
+    </BottomSheet>
+  );
 
   return (
     <View style={styles.Container}>
@@ -137,19 +211,7 @@ function TransactionForm({ category, back }) {
           </ListItem.Content>
           <ListItem.Chevron />
         </ListItem>
-        <ListItem
-          bottomDivider
-          onPress={() => setShowAccountsList(true)}
-          disabled={accountsStatus !== 'success'}
-        >
-          <ListItem.Content style={styles.FormRow}>
-            <Text>Account</Text>
-            <Text style={styles.DefaultValue(formState.dirtyFields.account)}>
-              {account || 'Select'}
-            </Text>
-          </ListItem.Content>
-          <ListItem.Chevron />
-        </ListItem>
+        {categoryInit ? accountItemComponent : categoryItemComponent}
         <ListItem bottomDivider>
           <ListItem.Content style={[styles.FormRow, styles.MemoRow]}>
             <Controller
@@ -189,24 +251,7 @@ function TransactionForm({ category, back }) {
           }}
         />
       )}
-      <BottomSheet isVisible={showAccountsList}>
-        {(accounts || []).map((account, i) => (
-          <ListItem
-            key={i}
-            onPress={() => {
-              setShowAccountsList(false);
-              setValue('account', account, {
-                shouldValidate: true,
-                shouldDirty: true,
-              });
-            }}
-          >
-            <ListItem.Content>
-              <ListItem.Title>{account}</ListItem.Title>
-            </ListItem.Content>
-          </ListItem>
-        ))}
-      </BottomSheet>
+      {categoryInit ? accountListComponent : categoriesListComponent}
     </View>
   );
 }
