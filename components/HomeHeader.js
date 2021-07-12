@@ -35,6 +35,21 @@ const styles = StyleSheet.create({
   }),
 });
 
+const months = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
+
 function Header() {
   const { stats } = useContext(StateContext);
   const { status, value, execute } = stats;
@@ -48,7 +63,7 @@ function Header() {
   return (
     <View style={styles.container}>
       <View style={styles.monthContainer}>
-        <Text style={styles.monthText}>February</Text>
+        <Text style={styles.monthText}>{months[new Date().getMonth()]}</Text>
       </View>
       <View style={styles.item}>
         <Text>to budget</Text>
