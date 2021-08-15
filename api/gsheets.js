@@ -50,7 +50,8 @@ export async function verifySpreadSheet(token, spreadsheetId) {
     return false;
   }
 
-  return data.values[0][data.values[0].length - 1] === '3.2.0';
+  const verison = data.values[0][data.values[0].length - 1];
+  return verison === '3.2.0' || verison === '3.3.0';
 }
 
 export async function fetchCategoriesBalance(token, spreadsheetId) {

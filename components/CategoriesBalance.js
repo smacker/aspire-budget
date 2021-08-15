@@ -131,7 +131,9 @@ function CategoriesBalance({ navigation }) {
           <Row
             item={item}
             onPress={
-              item.isGroup ? null : () => navigation.navigate('Category', item)
+              item.isGroup || item.isCreditCard
+                ? null
+                : () => navigation.navigate('Category', item)
             }
           />
         );
