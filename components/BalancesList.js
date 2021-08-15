@@ -1,29 +1,35 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { View, FlatList } from 'react-native';
-
 import { ListItem } from 'react-native-elements';
 
 import Retry from './Retry';
 
-import { useRequireAsync } from '../state/useAsync';
-import { StateContext } from '../state/stateContext';
+import { useStore, useGate } from 'effector-react';
+import {
+  BalancesGate,
+  $balancesPending,
+  $balancesError,
+  $balances,
+  loadBalances,
+} from '../state/balances';
 
 function BalancesList({ navigation }) {
-  const { balances } = useContext(StateContext);
-  const { status, value, execute } = balances;
+  const pending = useStore($balancesPending);
+  const error = useStore($balancesError);
+  const balances = useStore($balances);
 
-  useRequireAsync(status, execute);
+  useGate(BalancesGate);
 
-  if (status === 'error') {
-    return <Retry action={execute} />;
+  if (error) {
+    return <Retry action={loadBalances} />;
   }
 
   return (
     <FlatList
-      data={value}
+      data={balances}
       keyExtractor={(item) => item.id}
-      refreshing={status === 'pending'}
-      onRefresh={execute}
+      refreshing={pending}
+      onRefresh={loadBalances}
       renderItem={({ item }) => {
         return (
           <ListItem

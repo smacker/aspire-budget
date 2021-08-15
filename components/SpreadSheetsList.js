@@ -1,41 +1,68 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { FlatList } from 'react-native';
 
 import { ListItem } from 'react-native-elements';
+import SnackBar from 'react-native-snackbar-component';
 
 import Loading from './Loading';
 import Retry from './Retry';
 
-import useAsync from '../state/useAsync';
-import { StateContext } from '../state/stateContext';
+import { useStore, useGate } from 'effector-react';
+import {
+  SpreadsheetsGate,
+  $spreadsheets,
+  $spreadsheetsError,
+  $spreadsheetError,
+  loadSpreadsheetListFx,
+  selectSpreadsheetIdFx,
+  loadSpreadsheetList,
+  selectSpreadsheetId,
+} from '../state/spreadsheet';
 
 // show a loader inside the component while validating to avoid ugly UI re-draws
-function SpreadSheetsList({ onSelect, validating }) {
-  const { fetchSpreadSheets } = useContext(StateContext);
-  const { status, value, execute } = useAsync(fetchSpreadSheets);
+function SpreadSheetsList() {
+  const loading = useStore(loadSpreadsheetListFx.pending);
+  const spreadsheetsError = useStore($spreadsheetsError);
+  const validating = useStore(selectSpreadsheetIdFx.pending);
+  const spreadsheets = useStore($spreadsheets);
+  const error = useStore($spreadsheetError);
 
-  if (status === 'pending' || validating) {
+  useGate(SpreadsheetsGate);
+
+  if (loading || validating) {
     return <Loading size="large" fill />;
   }
 
-  if (status === 'error') {
-    return <Retry action={execute} />;
+  if (spreadsheetsError) {
+    return <Retry action={loadSpreadsheetList} />;
   }
 
   return (
-    <FlatList
-      data={value}
-      keyExtractor={(item) => item.id}
-      renderItem={({ item }) => {
-        return (
-          <ListItem bottomDivider onPress={() => onSelect(item.id)}>
-            <ListItem.Content>
-              <ListItem.Title>{item.name}</ListItem.Title>
-            </ListItem.Content>
-          </ListItem>
-        );
-      }}
-    ></FlatList>
+    <>
+      <FlatList
+        data={spreadsheets}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => {
+          return (
+            <ListItem
+              bottomDivider
+              onPress={() => selectSpreadsheetId(item.id)}
+            >
+              <ListItem.Content>
+                <ListItem.Title>{item.name}</ListItem.Title>
+              </ListItem.Content>
+            </ListItem>
+          );
+        }}
+      ></FlatList>
+      <SnackBar
+        visible={!!error}
+        key="notification"
+        textMessage="Incorrect file, please try another one"
+        //actionHandler={() => setVisible(false)}
+        backgroundColor="#b00020"
+      ></SnackBar>
+    </>
   );
 }
 

@@ -1,12 +1,12 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, Switch, TextInput } from 'react-native';
 
 import { ListItem, Button, Text, BottomSheet } from 'react-native-elements';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useForm, Controller } from 'react-hook-form';
 
-import { useRequireAsync } from '../state/useAsync';
-import { StateContext } from '../state/stateContext';
+import { useStore, useGate } from 'effector-react';
+import { AccountsGate, $accounts, addTransaction } from '../state/transactions';
 
 import { colors } from './constants';
 import { formatDate } from '../helpers/date';
@@ -19,17 +19,9 @@ const accountTxCategories = [
 ];
 
 function TransactionForm({ categoryInit = '', accountInit = '', back }) {
-  const { transactionAccounts, addTransaction, categories, balances } =
-    useContext(StateContext);
-  const {
-    status: accountsStatus,
-    value: accounts,
-    execute: accountsExecute,
-  } = transactionAccounts;
-  const { status: categoriesStatus, execute: categoriesExecute } = categories;
-  const { status: balancesStatus, execute: balancesExecute } = balances;
+  const accounts = useStore($accounts);
 
-  useRequireAsync(accountsStatus, accountsExecute);
+  useGate(AccountsGate);
 
   // setup form
   const defaultValues = {
@@ -73,10 +65,6 @@ function TransactionForm({ categoryInit = '', accountInit = '', back }) {
       setServerError('Could not submit transaction. Please try again.');
     }
 
-    // refresh global cached data
-    if (categoriesStatus !== 'idle') categoriesExecute();
-    if (balancesStatus !== 'idle') balancesExecute();
-
     await back();
   };
 
@@ -114,12 +102,9 @@ function TransactionForm({ categoryInit = '', accountInit = '', back }) {
     </BottomSheet>
   );
 
+  //disabled={accountsStatus !== 'success'}
   const categoryItemComponent = (
-    <ListItem
-      bottomDivider
-      onPress={() => setShowCategoriesList(true)}
-      disabled={accountsStatus !== 'success'}
-    >
+    <ListItem bottomDivider onPress={() => setShowCategoriesList(true)}>
       <ListItem.Content style={styles.FormRow}>
         <Text>Category</Text>
         <Text style={styles.DefaultValue(formState.dirtyFields.category)}>

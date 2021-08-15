@@ -1,13 +1,18 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { StyleSheet, View, FlatList, Text } from 'react-native';
-
 import { ListItem } from 'react-native-elements';
 
 import Retry from './Retry';
 import Currency from './Currency';
 
-import { useRequireAsync } from '../state/useAsync';
-import { StateContext } from '../state/stateContext';
+import { useStore, useGate } from 'effector-react';
+import {
+  CategoriesGate,
+  $categoriesPending,
+  $categoriesError,
+  $categories,
+  loadCategories,
+} from '../state/dashboard';
 
 import { colors } from './constants';
 import { unsetColor, warningColor } from './utils';
@@ -111,21 +116,22 @@ function Row({ item, onPress }) {
 }
 
 function CategoriesBalance({ navigation }) {
-  const { categories } = useContext(StateContext);
-  const { status, value, execute } = categories;
+  const pending = useStore($categoriesPending);
+  const error = useStore($categoriesError);
+  const categories = useStore($categories);
 
-  useRequireAsync(status, execute);
+  useGate(CategoriesGate);
 
-  if (status === 'error') {
-    return <Retry action={execute} />;
+  if (error) {
+    return <Retry action={loadCategories} />;
   }
 
   return (
     <FlatList
-      data={value}
+      data={categories}
       keyExtractor={(item) => item.id}
-      refreshing={status === 'pending'}
-      onRefresh={execute}
+      refreshing={pending}
+      onRefresh={loadCategories}
       renderItem={({ item }) => {
         return (
           <Row

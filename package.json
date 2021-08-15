@@ -6,7 +6,9 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "prepare": "patch-package"
+    "prepare": "patch-package",
+    "test": "jest",
+    "testDebug": "jest -o --watch --coverage=false"
   },
   "dependencies": {
     "@expo/webpack-config": "~0.12.63",
@@ -16,6 +18,8 @@
     "@react-navigation/drawer": "^5.9.0",
     "@react-navigation/native": "^5.7.3",
     "@react-navigation/stack": "^5.9.0",
+    "effector": "^21.8.12",
+    "effector-react": "^21.3.3",
     "expo": "^41.0.0",
     "expo-app-loading": "^1.0.1",
     "expo-font": "~9.1.0",
@@ -25,6 +29,8 @@
     "expo-local-authentication": "~11.0.2",
     "expo-secure-store": "~10.1.0",
     "expo-status-bar": "~1.0.4",
+    "jest": "^27.0.6",
+    "jest-expo": "^42.1.0",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-hook-form": "^7.3.6",
@@ -42,10 +48,14 @@
     "@babel/core": "~7.9.0",
     "babel-preset-expo": "8.3.0",
     "eslint": "^7.19.0",
+    "eslint-plugin-jest": "^24.4.0",
     "eslint-plugin-react": "^7.22.0",
     "eslint-plugin-react-hooks": "^4.2.0",
     "patch-package": "^6.2.2",
     "postinstall-prepare": "^1.0.1"
+  },
+  "jest": {
+    "preset": "jest-expo"
   },
   "private": true
 }

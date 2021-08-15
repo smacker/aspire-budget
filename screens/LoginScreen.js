@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   },
 });
 
-function LoginScreen({ authStatus, login }) {
+function LoginScreen({ pending, login }) {
   return (
     <View style={styles.container}>
       <View style={styles.header1Container}>
@@ -37,7 +37,7 @@ function LoginScreen({ authStatus, login }) {
         <Text style={styles.header2}>budgeting</Text>
       </View>
       <View style={styles.actionContainer}>
-        {authStatus === 'pending' ? (
+        {pending ? (
           <Loading size="large" />
         ) : (
           <Ionicons.Button name="logo-google" onPress={() => login()}>

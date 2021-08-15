@@ -1,10 +1,9 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
-
 import Currency from './Currency';
 
-import { useRequireAsync } from '../state/useAsync';
-import { StateContext } from '../state/stateContext';
+import { useStore, useGate } from 'effector-react';
+import { StatsGate, $statsPending, $stats } from '../state/dashboard';
 
 import { colors } from './constants';
 import { unsetColor } from './utils';
@@ -51,12 +50,12 @@ const months = [
 ];
 
 function Header() {
-  const { stats } = useContext(StateContext);
-  const { status, value, execute } = stats;
+  const pending = useStore($statsPending);
+  const stats = useStore($stats);
 
-  useRequireAsync(status, execute);
+  useGate(StatsGate);
 
-  if (status !== 'success') {
+  if (pending) {
     return <Text>Loading...</Text>;
   }
 
@@ -68,21 +67,21 @@ function Header() {
       <View style={styles.item}>
         <Text>to budget</Text>
         <Currency
-          style={styles.AvailableValue(value.toBudget)}
-          value={value.toBudget}
+          style={styles.AvailableValue(stats.toBudget)}
+          value={stats.toBudget}
         />
       </View>
       <View style={styles.item}>
         <Text>spent</Text>
         <Currency
-          style={styles.ActivityValue(value.spent)}
-          value={value.spent}
+          style={styles.ActivityValue(stats.spent)}
+          value={stats.spent}
         />
       </View>
       <View style={styles.item}>
         <Text>pending</Text>
-        <Text style={styles.PendingTxsValue(value.pending)}>
-          {value.pending}
+        <Text style={styles.PendingTxsValue(stats.pending)}>
+          {stats.pending}
         </Text>
       </View>
     </View>

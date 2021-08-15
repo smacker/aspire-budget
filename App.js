@@ -1,19 +1,23 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import AppLoading from 'expo-app-loading';
 import * as Font from 'expo-font';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
+import { useStore, useGate } from 'effector-react';
+import { $isAuth, gSignIn, gSignInFx } from './state/auth';
+import { $spreadsheetId } from './state/spreadsheet';
 import useBiometric from './state/useBiometric';
-import { StateProvider, StateContext } from './state/stateContext';
 
 import LoginScreen from './screens/LoginScreen';
 import SpreadSheetsScreen from './screens/SpreadSheetsScreen';
 import DashboardScreen from './screens/DashboardScreen';
 import BalancesScreen from './screens/BalancesScreen';
 import SettingsScreen from './screens/SettingsScreen';
-import SnackBar from 'react-native-snackbar-component';
+
+import './state/app/init';
+import { AppGate } from './state/app';
 
 const Tab = createBottomTabNavigator();
 
@@ -50,50 +54,17 @@ function MainScreen() {
   );
 }
 
-function SpreadSheetsSelector({ spreadsheet }) {
-  const [visible, setVisible] = useState(!!spreadsheet.error);
-
-  useEffect(() => {
-    setVisible(!!spreadsheet.error);
-  }, [spreadsheet.error]);
-
-  return [
-    <SpreadSheetsScreen
-      onSelect={spreadsheet.setValue}
-      validating={spreadsheet.status === 'pending'}
-      key="screen"
-    />,
-    <SnackBar
-      visible={visible}
-      key="notification"
-      textMessage="Incorrect file, please try another one"
-      actionHandler={() => setVisible(false)}
-      backgroundColor="#b00020"
-    ></SnackBar>,
-  ];
-}
-
 function ScreenSelector() {
-  const { authStatus, login, spreadsheet } = useContext(StateContext);
-  // for initial loading we need to show full screen loader instead of a loader inside sheet selector
-  const [isFirstLoad, setFirstLoad] = useState(true);
+  const isAuth = useStore($isAuth);
+  const spreadsheetId = useStore($spreadsheetId);
+  const loginPending = useStore(gSignInFx.pending);
 
-  if (
-    !authStatus ||
-    !spreadsheet.status ||
-    (isFirstLoad && spreadsheet.status === 'pending')
-  ) {
-    return <AppLoading />;
-  }
-  // if we got here it is not the first load anymore
-  if (isFirstLoad) setFirstLoad(false);
-
-  if (authStatus !== 'authorized') {
-    return <LoginScreen authStatus={authStatus} login={login} />;
+  if (!isAuth) {
+    return <LoginScreen pending={loginPending} login={gSignIn} />;
   }
 
-  if (spreadsheet.status !== 'success') {
-    return <SpreadSheetsSelector spreadsheet={spreadsheet} />;
+  if (!spreadsheetId) {
+    return <SpreadSheetsScreen />;
   }
 
   return <MainScreen />;
@@ -102,6 +73,8 @@ function ScreenSelector() {
 function App() {
   const [isReady, setReady] = useState(false);
   const [isBiometricSuccess] = useBiometric();
+
+  useGate(AppGate);
 
   // init the app
   useEffect(() => {
@@ -123,11 +96,9 @@ function App() {
   }
 
   return (
-    <StateProvider>
-      <NavigationContainer>
-        <ScreenSelector />
-      </NavigationContainer>
-    </StateProvider>
+    <NavigationContainer>
+      <ScreenSelector />
+    </NavigationContainer>
   );
 }
 

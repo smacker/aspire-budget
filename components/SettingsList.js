@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { FlatList, Switch } from 'react-native';
 import * as Linking from 'expo-linking';
 import { ListItem, Divider } from 'react-native-elements';
@@ -7,12 +7,12 @@ import {
   useBiometricIsAvailable,
   useBiometricIsEnabled,
 } from '../state/useBiometric';
-import { StateContext } from '../state/stateContext';
+
+import { logout } from '../state/auth';
 
 function SettingsList() {
   const [bioAvailableReady, bioAvailable] = useBiometricIsAvailable();
   const [bioEnabledReady, bioEnabled, bioSetEnable] = useBiometricIsEnabled();
-  const { logout } = useContext(StateContext);
 
   const data = [
     {
