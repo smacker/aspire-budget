@@ -5,22 +5,13 @@ import {
   addTransactionFx,
   $accounts,
   AccountsGate,
-} from '.';
-import { $apiParams, $isApiReady } from '../app';
-import {
-  fetchTransactionAccounts,
-  addTransaction as fetchAddTransaction,
-} from '../../api/gsheets';
+} from './index';
+import { $isApiReady } from '../app';
 import { guard, forward, attach } from 'effector';
-import { Transaction } from '../../types';
+import api from '../../api';
 
-loadAccountsFx.use(({ token, spreadsheetId }) =>
-  fetchTransactionAccounts(token, spreadsheetId)
-);
-
-addTransactionFx.use(({ token, spreadsheetId, data }) =>
-  fetchAddTransaction(token, spreadsheetId, data)
-);
+loadAccountsFx.use(() => api.fetchTransactionAccounts());
+addTransactionFx.use((data) => api.fetchAddTransaction(data));
 
 forward({
   from: AccountsGate.open,
@@ -28,8 +19,7 @@ forward({
 });
 
 guard({
-  clock: loadAccounts,
-  source: $apiParams,
+  source: loadAccounts,
   filter: $isApiReady,
   target: loadAccountsFx,
 });
@@ -37,15 +27,7 @@ guard({
 guard({
   source: addTransaction,
   filter: $isApiReady,
-  target: attach({
-    effect: addTransactionFx,
-    source: $apiParams,
-    mapParams: (data: Transaction, { token, spreadsheetId }) => ({
-      token,
-      spreadsheetId,
-      data,
-    }),
-  }),
+  target: addTransactionFx,
 });
 
 $accounts.on(loadAccountsFx.doneData, (_, data) => data);

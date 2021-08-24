@@ -13,15 +13,11 @@ export const loadSpreadsheetIdFx = app.createEffect<
   Error
 >();
 export const loadSpreadsheetListFx = app.createEffect<
-  { token: string },
+  void,
   Spreadsheet[],
   Error
 >();
-export const selectSpreadsheetIdFx = app.createEffect<
-  { token: string; id: string },
-  string,
-  Error
->();
+export const selectSpreadsheetIdFx = app.createEffect<string, string, Error>();
 export const removeSpreadsheetIdFx = app.createEffect<void, void, Error>();
 
 export const $spreadsheetId = app.createStore<string>(null);

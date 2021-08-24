@@ -1,9 +1,3 @@
-export type AuthData = {
-  accessToken: string;
-  refreshToken: string;
-  expiryTime: number;
-};
-
 export type Spreadsheet = {
   id: string;
   name: string;

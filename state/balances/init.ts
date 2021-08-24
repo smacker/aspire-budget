@@ -1,17 +1,15 @@
+import { guard, forward } from 'effector';
 import {
   loadBalances,
   loadBalancesFx,
   $balances,
   $balancesError,
   BalancesGate,
-} from '.';
-import { $apiParams, $isApiReady } from '../app';
-import { fetchBalances } from '../../api/gsheets';
-import { guard, forward } from 'effector';
+} from './index';
+import { $isApiReady } from '../app';
+import api from '../../api';
 
-loadBalancesFx.use(({ token, spreadsheetId }) =>
-  fetchBalances(token, spreadsheetId)
-);
+loadBalancesFx.use(() => api.fetchBalances());
 
 forward({
   from: BalancesGate.open,
@@ -19,8 +17,7 @@ forward({
 });
 
 guard({
-  clock: loadBalances,
-  source: $apiParams,
+  source: loadBalances,
   filter: $isApiReady,
   target: loadBalancesFx,
 });

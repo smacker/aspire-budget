@@ -6,8 +6,8 @@ import '../dashboard/init';
 import '../balances/init';
 import '../transactions/init';
 
-import { AppGate } from '.';
-import { loadAuthDataFx } from '../auth';
+import { AppGate } from './index';
+import { initApiFx } from '../auth';
 import { loadSpreadsheetIdFx } from '../spreadsheet';
 import { addTransactionFx } from '../transactions';
 import { loadCategories, loadStats } from '../dashboard';
@@ -15,7 +15,7 @@ import { loadBalances } from '../balances';
 
 forward({
   from: AppGate.open,
-  to: [loadAuthDataFx, loadSpreadsheetIdFx],
+  to: [initApiFx, loadSpreadsheetIdFx],
 });
 
 forward({

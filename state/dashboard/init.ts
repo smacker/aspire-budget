@@ -1,3 +1,4 @@
+import { guard, forward } from 'effector';
 import {
   loadCategories,
   loadCategoriesFx,
@@ -8,14 +9,11 @@ import {
   StatsGate,
   loadStats,
   $stats,
-} from '.';
-import { $apiParams, $isApiReady } from '../app';
-import { fetchCategoriesBalance, fetchMainStats } from '../../api/gsheets';
-import { guard, forward } from 'effector';
+} from './index';
+import { $isApiReady } from '../app';
+import api from '../../api';
 
-loadCategoriesFx.use(({ token, spreadsheetId }) =>
-  fetchCategoriesBalance(token, spreadsheetId)
-);
+loadCategoriesFx.use(() => api.fetchCategoriesBalance());
 
 forward({
   from: CategoriesGate.open,
@@ -23,8 +21,7 @@ forward({
 });
 
 guard({
-  clock: loadCategories,
-  source: $apiParams,
+  source: loadCategories,
   filter: $isApiReady,
   target: loadCategoriesFx,
 });
@@ -34,9 +31,7 @@ $categoriesError.on(loadCategoriesFx.failData, (_, data) => data);
 
 //
 
-loadStatsFx.use(({ token, spreadsheetId }) =>
-  fetchMainStats(token, spreadsheetId)
-);
+loadStatsFx.use(() => api.fetchMainStats());
 
 forward({
   from: StatsGate.open,
@@ -44,8 +39,7 @@ forward({
 });
 
 guard({
-  clock: loadStats,
-  source: $apiParams,
+  source: loadStats,
   filter: $isApiReady,
   target: loadStatsFx,
 });

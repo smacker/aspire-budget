@@ -6,11 +6,7 @@ export const BalancesGate = createGate();
 
 export const loadBalances = app.createEvent();
 
-export const loadBalancesFx = app.createEffect<
-  { token: string; spreadsheetId: string },
-  Balance[],
-  Error
->();
+export const loadBalancesFx = app.createEffect<void, Balance[], Error>();
 
 export const $balancesPending = loadBalancesFx.pending;
 export const $balancesError = app.createStore<Error>(null);

@@ -1,19 +1,19 @@
 import { createGate } from 'effector-react';
 import { combine } from 'effector';
 
-import { $token } from '../auth';
+import { $isAuth } from '../auth';
 import { $spreadsheetId } from '../spreadsheet';
 
 export const AppGate = createGate();
 
 export const $apiParams = combine(
-  $token,
+  $isAuth,
   $spreadsheetId,
-  (token, spreadsheetId) => ({
-    token,
+  (isAuth, spreadsheetId) => ({
+    isAuth,
     spreadsheetId,
   })
 );
 export const $isApiReady = $apiParams.map(
-  ({ token, spreadsheetId }) => !!(token && spreadsheetId)
+  ({ isAuth, spreadsheetId }) => !!(isAuth && spreadsheetId)
 );

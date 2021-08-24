@@ -1,7 +1,6 @@
 import * as SecureStore from 'expo-secure-store';
-import { forward, guard, attach } from 'effector';
-import { fetchSpreadSheets, verifySpreadSheet } from '../../api/gsheets';
-import { $token, $isAuth, logout } from '../auth';
+import { forward, guard } from 'effector';
+import { $isAuth, logout } from '../auth';
 import {
   selectSpreadsheetId,
   loadSpreadsheetList,
@@ -14,38 +13,10 @@ import {
   $spreadsheetId,
   $spreadsheetError,
   SpreadsheetsGate,
-} from '.';
+} from './index';
+import api from '../../api';
 
 const spreadsheetIdKey = 'aspire-spreadsheet-id';
-
-const verify = async (token: string, id: string) => {
-  let isValid = false;
-
-  try {
-    isValid = await verifySpreadSheet(token, id);
-  } catch (e) {
-    // map api error to customer friendly
-    if (e.type === 'status' && e.status === 400) {
-      throw 'spreadsheet is not valid';
-    } else {
-      console.error('verifySpreadSheet', e);
-      throw 'something went wrong';
-    }
-
-    // FIXME need to do something about it on api level probably?
-    // if (e.type === 'status' && e.status === 401) {
-    //   setErrorText('unauthorized');
-    // }
-  }
-
-  if (!isValid) {
-    throw 'spreadsheet is not valid';
-  }
-
-  await SecureStore.setItemAsync(spreadsheetIdKey, id);
-
-  return id;
-};
 
 // effects
 
@@ -55,16 +26,24 @@ loadSpreadsheetIdFx.use(async () => {
     return null;
   }
 
+  api.setSpreadsheetId(storedValue);
+
   return storedValue;
 });
 
-selectSpreadsheetIdFx.use(async ({ token, id }) => {
-  return verify(token, id);
+selectSpreadsheetIdFx.use(async (id) => {
+  let isValid = await api.verifySpreadSheet(id);
+  if (!isValid) {
+    throw 'spreadsheet is not valid';
+  }
+
+  api.setSpreadsheetId(id);
+  await SecureStore.setItemAsync(spreadsheetIdKey, id);
+
+  return id;
 });
 
-loadSpreadsheetListFx.use(async ({ token }) => {
-  return fetchSpreadSheets(token);
-});
+loadSpreadsheetListFx.use(() => api.fetchSpreadSheets());
 
 removeSpreadsheetIdFx.use(async () => {
   await SecureStore.deleteItemAsync(spreadsheetIdKey);
@@ -92,8 +71,7 @@ forward({
 });
 
 guard({
-  clock: loadSpreadsheetList,
-  source: $token.map((token) => ({ token })),
+  source: loadSpreadsheetList,
   filter: $isAuth,
   target: loadSpreadsheetListFx,
 });
@@ -101,11 +79,7 @@ guard({
 guard({
   source: selectSpreadsheetId,
   filter: $isAuth,
-  target: attach({
-    effect: selectSpreadsheetIdFx,
-    source: $token,
-    mapParams: (id: string, token: string) => ({ token, id }),
-  }),
+  target: selectSpreadsheetIdFx,
 });
 
 forward({
