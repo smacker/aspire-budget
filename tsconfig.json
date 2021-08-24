@@ -1,0 +1,6 @@
+{
+  "compilerOptions": {},
+  "extends": "expo/tsconfig.base",
+  "typeRoots": ["./types"],
+  "allowJs": false
+}

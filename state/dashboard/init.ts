@@ -8,7 +8,7 @@ import {
   StatsGate,
   loadStats,
   $stats,
-} from './';
+} from '.';
 import { $apiParams, $isApiReady } from '../app';
 import { fetchCategoriesBalance, fetchMainStats } from '../../api/gsheets';
 import { guard, forward } from 'effector';

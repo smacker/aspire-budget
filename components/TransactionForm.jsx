@@ -55,7 +55,8 @@ function TransactionForm({ categoryInit = '', accountInit = '', back }) {
   const [showCategoriesList, setShowCategoriesList] = useState(false);
 
   // form submit state
-  const [serverError, setServerError] = useState(null);
+  //const [serverError, setServerError] = useState(null);
+  const setServerError = () => null;
 
   const onAdd = async (data) => {
     try {

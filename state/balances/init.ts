@@ -4,7 +4,7 @@ import {
   $balances,
   $balancesError,
   BalancesGate,
-} from './';
+} from '.';
 import { $apiParams, $isApiReady } from '../app';
 import { fetchBalances } from '../../api/gsheets';
 import { guard, forward } from 'effector';

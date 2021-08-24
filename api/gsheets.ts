@@ -1,9 +1,12 @@
 import { formatDate } from '../helpers/date';
+import { Spreadsheet, Category, Balance, Transaction } from '../types';
 
 const driveBaseURL = 'https://www.googleapis.com/drive/v3';
 const sheetsBaseURL = 'https://sheets.googleapis.com/v4/spreadsheets';
 
-async function _fetch(token, url, params = {}) {
+type Token = string;
+
+async function _fetch(token: Token, url: string, params = {}) {
   const resp = await fetch(url, {
     headers: {
       'Content-Type': 'application/json; charset=UTF-8',
@@ -30,7 +33,7 @@ async function _fetch(token, url, params = {}) {
   return resp;
 }
 
-export async function fetchSpreadSheets(token) {
+export async function fetchSpreadSheets(token: Token): Promise<Spreadsheet[]> {
   const resp = await _fetch(
     token,
     `${driveBaseURL}/files?q=mimeType='application/vnd.google-apps.spreadsheet'`
@@ -39,7 +42,7 @@ export async function fetchSpreadSheets(token) {
   return data.files;
 }
 
-export async function verifySpreadSheet(token, spreadsheetId) {
+export async function verifySpreadSheet(token: Token, spreadsheetId: string) {
   const resp = await _fetch(
     token,
     `${sheetsBaseURL}/${spreadsheetId}/values/BackendData!2:2`
@@ -54,7 +57,10 @@ export async function verifySpreadSheet(token, spreadsheetId) {
   return verison === '3.2.0' || verison === '3.3.0';
 }
 
-export async function fetchCategoriesBalance(token, spreadsheetId) {
+export async function fetchCategoriesBalance(
+  token: Token,
+  spreadsheetId: string
+): Promise<Category[]> {
   const resp = await _fetch(
     token,
     `${sheetsBaseURL}/${spreadsheetId}/values/Dashboard!F6:O80?valueRenderOption=UNFORMATTED_VALUE`
@@ -105,7 +111,10 @@ export async function fetchCategoriesBalance(token, spreadsheetId) {
   return rows;
 }
 
-export async function fetchBalances(token, spreadsheetId) {
+export async function fetchBalances(
+  token: Token,
+  spreadsheetId: string
+): Promise<Balance[]> {
   const resp = await _fetch(
     token,
     `${sheetsBaseURL}/${spreadsheetId}/values/Dashboard!B8:C`
@@ -131,7 +140,10 @@ export async function fetchBalances(token, spreadsheetId) {
   }, []);
 }
 
-export async function fetchTransactionAccounts(token, spreadsheetId) {
+export async function fetchTransactionAccounts(
+  token: Token,
+  spreadsheetId: string
+): Promise<string[]> {
   const resp = await _fetch(
     token,
     `${sheetsBaseURL}/${spreadsheetId}/values/BackendData!M2:M`
@@ -145,7 +157,11 @@ export async function fetchTransactionAccounts(token, spreadsheetId) {
   return data.values.flat();
 }
 
-export async function addTransaction(token, spreadsheetId, data) {
+export async function addTransaction(
+  token: Token,
+  spreadsheetId: string,
+  data: Transaction
+) {
   const body = {
     majorDimension: 'ROWS',
     values: [
@@ -173,7 +189,7 @@ export async function addTransaction(token, spreadsheetId, data) {
   return resp.status === 200;
 }
 
-export async function fetchMainStats(token, spreadsheetId) {
+export async function fetchMainStats(token: Token, spreadsheetId: string) {
   const resp = await _fetch(
     token,
     `${sheetsBaseURL}/${spreadsheetId}/values/Dashboard!H2:O2?valueRenderOption=UNFORMATTED_VALUE`

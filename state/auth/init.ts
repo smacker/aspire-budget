@@ -10,7 +10,8 @@ import {
   gSignInFx,
   logoutFx,
   $authData,
-} from './';
+} from '.';
+import { AuthData } from '../../types';
 
 const authKey = 'aspire-auth';
 const scopes = [
@@ -53,7 +54,7 @@ const refresh = async ({ refreshToken }) => {
   return authData;
 };
 
-const verify = async (authData) => {
+const verify = async (authData: AuthData) => {
   if (new Date().getTime() >= authData.expiryTime) {
     return refresh(authData);
   }

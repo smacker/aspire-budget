@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, FlatList, Text } from 'react-native';
+import { StyleSheet, View, FlatList, Text, TextStyle } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
 import Retry from './Retry';
@@ -16,8 +16,9 @@ import {
 
 import { colors } from './constants';
 import { unsetColor, warningColor } from './utils';
+import { Category } from '../types';
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create<any>({
   Row: {
     paddingTop: 13,
     paddingBottom: 13,
@@ -58,7 +59,7 @@ function Value({ children }) {
   return <View style={styles.Value}>{children}</View>;
 }
 
-function Row({ item, onPress }) {
+function Row({ item, onPress }: { item: Category; onPress: () => void }) {
   return (
     <ListItem
       bottomDivider

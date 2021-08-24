@@ -6,7 +6,7 @@ import '../dashboard/init';
 import '../balances/init';
 import '../transactions/init';
 
-import { AppGate } from './';
+import { AppGate } from '.';
 import { loadAuthDataFx } from '../auth';
 import { loadSpreadsheetIdFx } from '../spreadsheet';
 import { addTransactionFx } from '../transactions';

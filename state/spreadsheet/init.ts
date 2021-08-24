@@ -1,7 +1,7 @@
 import * as SecureStore from 'expo-secure-store';
 import { forward, guard, attach } from 'effector';
 import { fetchSpreadSheets, verifySpreadSheet } from '../../api/gsheets';
-import { $token, logout } from '../auth';
+import { $token, $isAuth, logout } from '../auth';
 import {
   selectSpreadsheetId,
   loadSpreadsheetList,
@@ -14,11 +14,11 @@ import {
   $spreadsheetId,
   $spreadsheetError,
   SpreadsheetsGate,
-} from './';
+} from '.';
 
 const spreadsheetIdKey = 'aspire-spreadsheet-id';
 
-const verify = async (token, id) => {
+const verify = async (token: string, id: string) => {
   let isValid = false;
 
   try {
@@ -52,7 +52,7 @@ const verify = async (token, id) => {
 loadSpreadsheetIdFx.use(async () => {
   let storedValue = await SecureStore.getItemAsync(spreadsheetIdKey);
   if (!storedValue) {
-    return;
+    return null;
   }
 
   return storedValue;
@@ -94,17 +94,17 @@ forward({
 guard({
   clock: loadSpreadsheetList,
   source: $token.map((token) => ({ token })),
-  filter: $token,
+  filter: $isAuth,
   target: loadSpreadsheetListFx,
 });
 
 guard({
   source: selectSpreadsheetId,
-  filter: $token,
+  filter: $isAuth,
   target: attach({
     effect: selectSpreadsheetIdFx,
     source: $token,
-    mapParams: (id, token) => ({ token, id }),
+    mapParams: (id: string, token: string) => ({ token, id }),
   }),
 });
 

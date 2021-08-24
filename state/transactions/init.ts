@@ -5,13 +5,14 @@ import {
   addTransactionFx,
   $accounts,
   AccountsGate,
-} from './';
+} from '.';
 import { $apiParams, $isApiReady } from '../app';
 import {
   fetchTransactionAccounts,
   addTransaction as fetchAddTransaction,
 } from '../../api/gsheets';
 import { guard, forward, attach } from 'effector';
+import { Transaction } from '../../types';
 
 loadAccountsFx.use(({ token, spreadsheetId }) =>
   fetchTransactionAccounts(token, spreadsheetId)
@@ -39,7 +40,7 @@ guard({
   target: attach({
     effect: addTransactionFx,
     source: $apiParams,
-    mapParams: (data, { token, spreadsheetId }) => ({
+    mapParams: (data: Transaction, { token, spreadsheetId }) => ({
       token,
       spreadsheetId,
       data,
