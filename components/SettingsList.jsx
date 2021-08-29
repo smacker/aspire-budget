@@ -3,25 +3,27 @@ import { FlatList, Switch } from 'react-native';
 import * as Linking from 'expo-linking';
 import { ListItem, Divider } from 'react-native-elements';
 
+import { useStore } from 'effector-react';
 import {
-  useBiometricIsAvailable,
-  useBiometricIsEnabled,
-} from '../state/useBiometric';
+  $isAvailable,
+  $isEnabled,
+  setEnabled
+} from '../state/lock';
 
 import { logout } from '../state/auth';
 
 function SettingsList() {
-  const [bioAvailableReady, bioAvailable] = useBiometricIsAvailable();
-  const [bioEnabledReady, bioEnabled, bioSetEnable] = useBiometricIsEnabled();
+  const isAvailable = useStore($isAvailable);
+  const isEnabled = useStore($isEnabled);
 
   const data = [
     {
       id: 'fingerprint',
       text: 'Use fingerprint',
-      disabled: !bioAvailableReady || !bioEnabledReady || !bioAvailable,
+      disabled: !isAvailable,
       switch: {
-        value: bioEnabled,
-        onChange: () => bioSetEnable(!bioEnabled),
+        value: isEnabled,
+        onChange: () => setEnabled(!isEnabled),
       },
     },
     {
