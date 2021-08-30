@@ -5,7 +5,6 @@ import { Transaction } from '../../types';
 export const AccountsGate = createGate();
 
 export const loadAccounts = app.createEvent();
-export const addTransaction = app.createEvent<Transaction>();
 
 export const loadAccountsFx = app.createEffect<void, string[], Error>();
 export const addTransactionFx = app.createEffect<Transaction, boolean, Error>();

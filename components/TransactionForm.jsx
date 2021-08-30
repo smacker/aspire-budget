@@ -3,10 +3,16 @@ import { StyleSheet, View, Switch, TextInput } from 'react-native';
 
 import { ListItem, Button, Text, BottomSheet } from 'react-native-elements';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import SnackBar from 'react-native-snackbar-component';
 import { useForm, Controller } from 'react-hook-form';
 
 import { useStore, useGate } from 'effector-react';
-import { AccountsGate, $accounts, addTransaction } from '../state/transactions';
+import {
+  AccountsGate,
+  $accounts,
+  $txError,
+  addTransactionFx,
+} from '../state/transactions';
 
 import { colors } from './constants';
 import { formatDate } from '../helpers/date';
@@ -21,6 +27,7 @@ const accountTxCategories = [
 
 function TransactionForm({ categoryInit = '', accountInit = '', back }) {
   const accounts = useStore($accounts);
+  const serverError = useStore($txError);
 
   useGate(AccountsGate);
 
@@ -77,24 +84,18 @@ function TransactionForm({ categoryInit = '', accountInit = '', back }) {
   const [showAccountsList, setShowAccountsList] = useState(false);
   const [showCategoriesList, setShowCategoriesList] = useState(false);
 
-  // form submit state
-  //const [serverError, setServerError] = useState(null);
-  const setServerError = () => null;
-
-  // FIXME addTransaction is an event now, not Fx
   const onAdd = async (data) => {
     try {
-      await addTransaction(data);
+      await addTransactionFx(data);
       if (data.account2) {
-        await addTransaction({
+        await addTransactionFx({
           ...data,
           account: data.account2,
           inflow: !data.inflow,
         });
       }
     } catch (e) {
-      console.error(e);
-      setServerError('Could not submit transaction. Please try again.');
+      return;
     }
 
     await back();
@@ -289,6 +290,12 @@ function TransactionForm({ categoryInit = '', accountInit = '', back }) {
       {accountInit && category === accountTransferCategory
         ? accountListComponent
         : null}
+      <SnackBar
+        visible={!!serverError}
+        key="notification"
+        textMessage="Could not submit transaction. Please try again."
+        backgroundColor="#b00020"
+      ></SnackBar>
     </View>
   );
 }

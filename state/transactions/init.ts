@@ -1,13 +1,13 @@
 import {
   loadAccounts,
-  addTransaction,
   loadAccountsFx,
   addTransactionFx,
   $accounts,
+  $txError,
   AccountsGate,
 } from './index';
 import { $isApiReady } from '../app';
-import { guard, forward, attach } from 'effector';
+import { guard, forward } from 'effector';
 import api from '../../api';
 
 loadAccountsFx.use(() => api.fetchTransactionAccounts());
@@ -24,10 +24,7 @@ guard({
   target: loadAccountsFx,
 });
 
-guard({
-  source: addTransaction,
-  filter: $isApiReady,
-  target: addTransactionFx,
-});
-
 $accounts.on(loadAccountsFx.doneData, (_, data) => data);
+$txError
+  .reset(AccountsGate.close, addTransactionFx)
+  .on(addTransactionFx.failData, (_, data) => data);

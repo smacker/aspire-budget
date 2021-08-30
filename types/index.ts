@@ -24,7 +24,7 @@ export type Balance = {
 export type Transaction = {
   date: Date;
   inflow: boolean;
-  amount: number;
+  amount: string;
   category: string;
   account: string;
   memo: string;
