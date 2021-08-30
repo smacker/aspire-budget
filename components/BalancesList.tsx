@@ -3,6 +3,7 @@ import { View, FlatList } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
 import Retry from './Retry';
+import Currency from './Currency';
 
 import { useStore, useGate } from 'effector-react';
 import {
@@ -12,6 +13,9 @@ import {
   $balances,
   loadBalances,
 } from '../state/balances';
+
+import { colors } from './constants';
+import { unsetColor } from './utils';
 
 function BalancesList({ navigation }) {
   const pending = useStore($balancesPending);
@@ -48,7 +52,15 @@ function BalancesList({ navigation }) {
               >
                 <ListItem.Title>{item.name}</ListItem.Title>
                 <ListItem.Title style={{ fontWeight: 'bold' }}>
-                  {item.amount}
+                  <Currency
+                    style={{
+                      color: unsetColor(
+                        item.amount,
+                        item.amount > 0 ? colors.available : colors.activity
+                      ),
+                    }}
+                    value={item.amount}
+                  />
                 </ListItem.Title>
               </View>
               <ListItem.Subtitle>{item.lastUpdateOn}</ListItem.Subtitle>

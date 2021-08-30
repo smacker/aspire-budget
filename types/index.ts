@@ -17,7 +17,7 @@ export type Category = {
 export type Balance = {
   id: string;
   name: string;
-  amount: string;
+  amount: number;
   lastUpdateOn: string;
 };
 

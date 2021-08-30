@@ -135,7 +135,7 @@ export default class GSheetsAps {
 
   public async fetchBalances(): Promise<Balance[]> {
     const resp = await this.fetch(
-      `${sheetsBaseURL}/${this.spreadsheetId}/values/Dashboard!B8:C`
+      `${sheetsBaseURL}/${this.spreadsheetId}/values/Dashboard!B8:C?valueRenderOption=UNFORMATTED_VALUE`
     );
 
     const data = await resp.json();
@@ -148,7 +148,7 @@ export default class GSheetsAps {
         acc.push({
           id: '' + i,
           name: row[0],
-          amount: row[1],
+          amount: parseFloat(row[1]),
         });
       } else {
         acc[acc.length - 1].lastUpdateOn = row[0];

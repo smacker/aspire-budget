@@ -1,49 +1,39 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 
 import TransactionForm from './TransactionForm';
+import Currency from './Currency';
 
 import { colors } from './constants';
+import { unsetColor } from './utils';
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create<any>({
   Container: {
     flex: 1,
   },
-  // FIXME
-  Amounts: {
-    flexDirection: 'row',
+  Amount: {
     backgroundColor: '#fff',
     paddingTop: 10,
     paddingBottom: 10,
     marginBottom: 20,
-  },
-  Amount: {
-    flex: 1,
     alignItems: 'center',
   },
-  AmountValue: {
+  AmountValue: (v) => ({
     fontSize: 20,
     fontWeight: 'bold',
-  },
-  BudgetedAmount: {
-    color: colors.budgeted,
-  },
-  AvailableAmount: {
-    color: colors.available,
-  },
-  ActivityAmount: {
-    color: colors.activity,
-  },
+    color: unsetColor(v, v > 0 ? colors.available : colors.activity),
+  }),
 });
 
-// <Amounts item={route.params} />
 function Balance({ route, navigation }) {
+  const { name, amount } = route.params;
   return (
     <View style={styles.Container}>
-      <TransactionForm
-        accountInit={route.params.name}
-        back={() => navigation.goBack()}
-      />
+      <View style={styles.Amount}>
+        <Text>Balance</Text>
+        <Currency style={styles.AmountValue(amount)} value={amount} />
+      </View>
+      <TransactionForm accountInit={name} back={() => navigation.goBack()} />
     </View>
   );
 }
