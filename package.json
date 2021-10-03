@@ -11,6 +11,7 @@
     "testDebug": "jest -o --watch --coverage=false"
   },
   "dependencies": {
+    "@config-plugins/android-jsc-intl": "^0.0.0",
     "@expo/webpack-config": "~0.12.63",
     "@react-native-async-storage/async-storage": "~1.15.0",
     "@react-native-community/datetimepicker": "3.5.2",

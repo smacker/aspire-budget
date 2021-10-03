@@ -29,6 +29,7 @@
           "certificateHash": "***REMOVED***"
         }
       }
-    }
+    },
+    "plugins": ["@config-plugins/android-jsc-intl"]
   }
 }
