@@ -1,8 +1,9 @@
 import { AppState } from 'react-native';
 import * as Font from 'expo-font';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
-import { forward, combine } from 'effector';
+import { forward } from 'effector';
 
+import '../configuration/init';
 import '../lock/init';
 import '../auth/init';
 import '../spreadsheet/init';
@@ -19,6 +20,7 @@ import {
   $isVisible,
 } from './index';
 import { isAvailableFx, isEnabledFx, tryUnlock } from '../lock';
+import { loadLocaleFx, loadCurrencyCodeFx } from '../configuration';
 import { initApiFx } from '../auth';
 import { loadSpreadsheetIdFx } from '../spreadsheet';
 import { addTransactionFx } from '../transactions';
@@ -35,7 +37,13 @@ loadFontsFx.use(async () => {
 });
 
 initFx.use(async () => {
-  await Promise.all([loadFontsFx(), isAvailableFx(), isEnabledFx()]);
+  await Promise.all([
+    loadFontsFx(),
+    isAvailableFx(),
+    isEnabledFx(),
+    loadLocaleFx(),
+    loadCurrencyCodeFx(),
+  ]);
   await initApiFx();
   await loadSpreadsheetIdFx();
 

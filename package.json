@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@expo/webpack-config": "~0.12.63",
+    "@react-native-async-storage/async-storage": "^1.13.0",
     "@react-native-community/datetimepicker": "3.2.0",
     "@react-native-community/masked-view": "0.1.10",
     "@react-navigation/bottom-tabs": "^5.8.0",
@@ -27,6 +28,7 @@
     "expo-google-sign-in": "~9.1.0",
     "expo-linking": "^2.2.3",
     "expo-local-authentication": "~11.0.2",
+    "expo-localization": "~10.1.0",
     "expo-secure-store": "~10.1.0",
     "expo-status-bar": "~1.0.4",
     "jest": "^27.0.6",

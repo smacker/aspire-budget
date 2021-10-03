@@ -4,19 +4,28 @@ import * as Linking from 'expo-linking';
 import { ListItem, Divider } from 'react-native-elements';
 
 import { useStore } from 'effector-react';
-import {
-  $isAvailable,
-  $isEnabled,
-  setEnabled
-} from '../state/lock';
+import { $isAvailable, $isEnabled, setEnabled } from '../state/lock';
 
 import { logout } from '../state/auth';
+import { $currencyCode, $locale } from '../state/configuration';
 
 function SettingsList() {
   const isAvailable = useStore($isAvailable);
   const isEnabled = useStore($isEnabled);
+  const locale = useStore($locale);
+  const currencyCode = useStore($currencyCode);
 
-  const data = [
+  const data: {
+    id: string;
+    text?: string;
+    value?: string;
+    chevron?: boolean;
+    disabled?: boolean;
+    divider?: boolean;
+    separate?: boolean;
+    switch?: { value: boolean; onChange: () => void };
+    onPress?: () => void;
+  }[] = [
     {
       id: 'fingerprint',
       text: 'Use fingerprint',
@@ -25,6 +34,22 @@ function SettingsList() {
         value: isEnabled,
         onChange: () => setEnabled(!isEnabled),
       },
+    },
+    {
+      id: 'locale',
+      text: 'Locale',
+      value: locale,
+      chevron: true,
+    },
+    {
+      id: 'currency',
+      text: 'Currency code',
+      value: currencyCode,
+      chevron: true,
+    },
+    {
+      id: 'divider',
+      divider: true,
     },
     {
       id: 'reddit',
@@ -51,9 +76,7 @@ function SettingsList() {
       keyExtractor={(item) => item.id}
       renderItem={({ item }) => {
         if (item.divider) {
-          return (
-            <Divider height={20} style={{ backgroundColor: 'transparent' }} />
-          );
+          return <Divider style={{ backgroundColor: 'transparent' }} />;
         }
 
         return (
@@ -65,6 +88,9 @@ function SettingsList() {
           >
             <ListItem.Content>
               <ListItem.Title>{item.text}</ListItem.Title>
+              {item.value ? (
+                <ListItem.Title>{item.value}</ListItem.Title>
+              ) : null}
             </ListItem.Content>
             {item.chevron ? <ListItem.Chevron /> : null}
             {item.switch ? (
