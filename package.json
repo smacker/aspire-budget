@@ -32,6 +32,7 @@
     "expo-localization": "~10.2.0",
     "expo-secure-store": "~10.2.0",
     "expo-status-bar": "~1.0.4",
+    "intl": "^1.2.5",
     "jest": "^27.0.6",
     "jest-expo": "^42.0.0",
     "react": "16.13.1",
