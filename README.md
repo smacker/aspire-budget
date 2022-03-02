@@ -2,6 +2,18 @@
 
 A simple mobile app to work with [aspire budgeting spreadsheet](https://aspirebudget.com/).
 
+### Download
+
+#### Android
+
+Standalone APK: https://exp-shell-app-assets.s3.us-west-1.amazonaws.com/android/%40smacker/aspire-51a1131b1c7b4d06afb89d27e4c19e0d-signed.apk
+
+Expo Go release channel: https://expo.dev/@smacker/aspire
+
+#### iOS
+
+Coming soon.
+
 ### Screenshots
 
 ![Dashboard](.github/images/Dashboard.png)
