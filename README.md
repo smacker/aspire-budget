@@ -16,9 +16,7 @@ Coming soon.
 
 ### Screenshots
 
-![Dashboard](.github/images/Dashboard.png)
-![Add transaction](.github/images/Add-transaction.png)
-![Balances](.github/images/Balances.png)
+<img src="https://raw.githubusercontent.com/smacker/aspire-budget/master/.github/images/Dashboard.png" alt="Dashboard" width="250" /> <img src="https://raw.githubusercontent.com/smacker/aspire-budget/master/.github/images/Add-transaction.png" alt="Add transaction" width="250" /> <img src="https://raw.githubusercontent.com/smacker/aspire-budget/master/.github/images/Balances.png" alt="Balances" width="250" />
 
 ### Development
 
