@@ -9,8 +9,6 @@ import {
 } from './index';
 import api from '../../api';
 
-const authKey = 'aspire-auth';
-
 // effects
 
 initApiFx.use(async () => {

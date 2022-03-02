@@ -1,6 +1,8 @@
 {
-  "compilerOptions": {},
   "extends": "expo/tsconfig.base",
-  "typeRoots": ["./types"],
-  "allowJs": false
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "allowJs": false
+  },
+  "typeRoots": ["./types"]
 }

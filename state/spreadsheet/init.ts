@@ -21,7 +21,7 @@ const spreadsheetIdKey = 'aspire-spreadsheet-id';
 // effects
 
 loadSpreadsheetIdFx.use(async () => {
-  let storedValue = await SecureStore.getItemAsync(spreadsheetIdKey);
+  const storedValue = await SecureStore.getItemAsync(spreadsheetIdKey);
   if (!storedValue) {
     return null;
   }
@@ -32,7 +32,7 @@ loadSpreadsheetIdFx.use(async () => {
 });
 
 selectSpreadsheetIdFx.use(async (id) => {
-  let isValid = await api.verifySpreadSheet(id);
+  const isValid = await api.verifySpreadSheet(id);
   if (!isValid) {
     throw 'spreadsheet is not valid';
   }

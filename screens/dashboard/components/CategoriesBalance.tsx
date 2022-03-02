@@ -1,9 +1,11 @@
 import React from 'react';
-import { StyleSheet, View, FlatList, Text, TextStyle } from 'react-native';
+import { StyleSheet, View, FlatList, Text } from 'react-native';
 import { ListItem } from 'react-native-elements';
+import { StackScreenProps } from '@react-navigation/stack';
 
-import Retry from './Retry';
-import Currency from './Currency';
+import Retry from '../../../components/Retry';
+import Currency from '../../../components/Currency';
+import { StackParamList } from '../DashboardScreen';
 
 import { useStore, useGate } from 'effector-react';
 import {
@@ -12,11 +14,11 @@ import {
   $categoriesError,
   $categories,
   loadCategories,
-} from '../state/dashboard';
+} from '../../../state/dashboard';
 
-import { colors } from './constants';
-import { unsetColor, warningColor } from './utils';
-import { Category } from '../types';
+import { colors } from '../../../components/constants';
+import { unsetColor, warningColor } from '../../../components/utils';
+import { Category } from '../../../types';
 
 const styles = StyleSheet.create<any>({
   Row: {
@@ -44,13 +46,13 @@ const styles = StyleSheet.create<any>({
   GroupText: {
     fontWeight: 'bold',
   },
-  BudgetedValue: (v) => ({
+  BudgetedValue: (v: number) => ({
     color: unsetColor(v, colors.budgeted),
   }),
-  AvailableValue: (v, total) => ({
+  AvailableValue: (v: number, total: number) => ({
     color: unsetColor(v, warningColor(v, total, colors.available)),
   }),
-  ActivityValue: (v) => ({
+  ActivityValue: (v: number) => ({
     color: unsetColor(v, colors.activity),
   }),
 });
@@ -116,7 +118,9 @@ function Row({ item, onPress }: { item: Category; onPress: () => void }) {
   );
 }
 
-function CategoriesBalance({ navigation }) {
+type Props = StackScreenProps<StackParamList, 'Categories'>;
+
+function CategoriesBalance({ navigation }: Props) {
   const pending = useStore($categoriesPending);
   const error = useStore($categoriesError);
   const categories = useStore($categories);

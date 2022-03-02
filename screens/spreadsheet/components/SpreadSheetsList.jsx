@@ -4,8 +4,8 @@ import { FlatList } from 'react-native';
 import { ListItem } from 'react-native-elements';
 import SnackBar from 'react-native-snackbar-component';
 
-import Loading from './Loading';
-import Retry from './Retry';
+import Loading from '../../../components/Loading';
+import Retry from '../../../components/Retry';
 
 import { useStore, useGate } from 'effector-react';
 import {
@@ -17,7 +17,7 @@ import {
   selectSpreadsheetIdFx,
   loadSpreadsheetList,
   selectSpreadsheetId,
-} from '../state/spreadsheet';
+} from '../../../state/spreadsheet';
 
 // show a loader inside the component while validating to avoid ugly UI re-draws
 function SpreadSheetsList() {

@@ -7,10 +7,10 @@ export function unsetColor(v: number, defaultColor: string) {
   return defaultColor;
 }
 
-const warningPrecentage = 0.3;
+const warningPercentage = 0.3;
 
 export function warningColor(v: number, total: number, color: string) {
-  if (v / total <= warningPrecentage) {
+  if (v / total <= warningPercentage) {
     return colors.warning;
   }
 

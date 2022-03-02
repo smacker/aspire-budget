@@ -8,7 +8,8 @@
     "eject": "expo eject",
     "prepare": "patch-package",
     "test": "jest",
-    "testDebug": "jest -o --watch --coverage=false"
+    "testDebug": "jest -o --watch --coverage=false",
+    "lint": "tsc --noEmit && yarn eslint . --ext .ts,.tsx,.js,.jsx"
   },
   "dependencies": {
     "@config-plugins/android-jsc-intl": "^0.0.0",
@@ -50,6 +51,8 @@
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",
+    "@typescript-eslint/eslint-plugin": "^5.13.0",
+    "@typescript-eslint/parser": "^5.13.0",
     "babel-preset-expo": "8.3.0",
     "eslint": "^7.19.0",
     "eslint-plugin-jest": "^24.4.0",

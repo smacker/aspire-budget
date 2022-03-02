@@ -12,10 +12,10 @@ import { $spreadsheetId } from './state/spreadsheet';
 
 import LockScreen from './screens/LockScreen';
 import LoginScreen from './screens/LoginScreen';
-import SpreadSheetsScreen from './screens/SpreadSheetsScreen';
-import DashboardScreen from './screens/DashboardScreen';
-import BalancesScreen from './screens/BalancesScreen';
-import SettingsScreen from './screens/SettingsScreen';
+import SpreadSheetsScreen from './screens/spreadsheet/SpreadSheetsScreen';
+import DashboardScreen from './screens/dashboard/DashboardScreen';
+import BalancesScreen from './screens/balances/BalancesScreen';
+import SettingsScreen from './screens/settings/SettingsScreen';
 
 import './state/app/init';
 import { AppGate, $isReady } from './state/app';

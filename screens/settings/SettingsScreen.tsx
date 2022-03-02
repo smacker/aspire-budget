@@ -2,9 +2,12 @@ import React from 'react';
 
 import { createStackNavigator } from '@react-navigation/stack';
 
-import SettingsList from '../components/SettingsList';
+import SettingsList from './components/SettingsList';
 
-const Stack = createStackNavigator();
+type StackParamList = {
+  Settings: undefined;
+};
+const Stack = createStackNavigator<StackParamList>();
 
 const SettingsScreen = () => {
   return (
@@ -13,7 +16,7 @@ const SettingsScreen = () => {
         options={{
           title: 'Settings',
         }}
-        name="Categories"
+        name="Settings"
         component={SettingsList}
       />
     </Stack.Navigator>

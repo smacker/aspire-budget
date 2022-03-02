@@ -2,10 +2,15 @@ import React from 'react';
 
 import { createStackNavigator } from '@react-navigation/stack';
 
-import BalancesList from '../components/BalancesList';
-import Balance from '../components/Balance';
+import BalancesList from './components/BalancesList';
+import Account from './components/Account';
+import { Balance } from '../../types';
 
-const Stack = createStackNavigator();
+export type StackParamList = {
+  BalancesList: undefined;
+  Account: Balance;
+};
+const Stack = createStackNavigator<StackParamList>();
 
 const BalancesScreen = () => {
   return (
@@ -19,7 +24,7 @@ const BalancesScreen = () => {
       />
       <Stack.Screen
         name="Account"
-        component={Balance}
+        component={Account}
         options={({ route }) => ({ title: route.params.name })}
       />
     </Stack.Navigator>

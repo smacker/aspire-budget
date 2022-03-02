@@ -1,12 +1,12 @@
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
-import Currency from './Currency';
+import Currency from '../../../components/Currency';
 
 import { useStore, useGate } from 'effector-react';
-import { StatsGate, $statsPending, $stats } from '../state/dashboard';
+import { StatsGate, $statsPending, $stats } from '../../../state/dashboard';
 
-import { colors } from './constants';
-import { unsetColor } from './utils';
+import { colors } from '../../../components/constants';
+import { unsetColor } from '../../../components/utils';
 
 const styles = StyleSheet.create({
   container: {

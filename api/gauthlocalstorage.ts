@@ -9,7 +9,7 @@ export default class GoogleAuthLocalStorage
   implements IGAuth
 {
   public async load(): Promise<AuthData> {
-    let storedValue = await SecureStore.getItemAsync(authKey);
+    const storedValue = await SecureStore.getItemAsync(authKey);
     if (!storedValue) {
       throw 'no saved data';
     }

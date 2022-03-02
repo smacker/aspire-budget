@@ -1,11 +1,13 @@
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
+import { StackScreenProps } from '@react-navigation/stack';
 
-import TransactionForm from './TransactionForm';
-import Currency from './Currency';
+import TransactionForm from '../../../components/TransactionForm';
+import Currency from '../../../components/Currency';
+import { StackParamList } from '../BalancesScreen';
 
-import { colors } from './constants';
-import { unsetColor } from './utils';
+import { colors } from '../../../components/constants';
+import { unsetColor } from '../../../components/utils';
 
 const styles = StyleSheet.create<any>({
   Container: {
@@ -18,14 +20,16 @@ const styles = StyleSheet.create<any>({
     marginBottom: 20,
     alignItems: 'center',
   },
-  AmountValue: (v) => ({
+  AmountValue: (v: number) => ({
     fontSize: 20,
     fontWeight: 'bold',
     color: unsetColor(v, v > 0 ? colors.available : colors.activity),
   }),
 });
 
-function Balance({ route, navigation }) {
+type Props = StackScreenProps<StackParamList, 'Account'>;
+
+function Account({ route, navigation }: Props) {
   const { name, amount } = route.params;
   return (
     <View style={styles.Container}>
@@ -38,4 +42,4 @@ function Balance({ route, navigation }) {
   );
 }
 
-export default Balance;
+export default Account;

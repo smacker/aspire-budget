@@ -1,9 +1,11 @@
 import React from 'react';
 import { View, FlatList } from 'react-native';
 import { ListItem } from 'react-native-elements';
+import { StackScreenProps } from '@react-navigation/stack';
 
-import Retry from './Retry';
-import Currency from './Currency';
+import Retry from '../../../components/Retry';
+import Currency from '../../../components/Currency';
+import { StackParamList } from '../BalancesScreen';
 
 import { useStore, useGate } from 'effector-react';
 import {
@@ -12,12 +14,14 @@ import {
   $balancesError,
   $balances,
   loadBalances,
-} from '../state/balances';
+} from '../../../state/balances';
 
-import { colors } from './constants';
-import { unsetColor } from './utils';
+import { colors } from '../../../components/constants';
+import { unsetColor } from '../../../components/utils';
 
-function BalancesList({ navigation }) {
+type Props = StackScreenProps<StackParamList, 'BalancesList'>;
+
+function BalancesList({ navigation }: Props) {
   const pending = useStore($balancesPending);
   const error = useStore($balancesError);
   const balances = useStore($balances);

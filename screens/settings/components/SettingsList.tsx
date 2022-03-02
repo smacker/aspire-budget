@@ -4,10 +4,10 @@ import * as Linking from 'expo-linking';
 import { ListItem, Divider } from 'react-native-elements';
 
 import { useStore } from 'effector-react';
-import { $isAvailable, $isEnabled, setEnabled } from '../state/lock';
+import { $isAvailable, $isEnabled, setEnabled } from '../../../state/lock';
 
-import { logout } from '../state/auth';
-import { $currencyCode, $locale } from '../state/configuration';
+import { logout } from '../../../state/auth';
+import { $currencyCode, $locale } from '../../../state/configuration';
 
 function SettingsList() {
   const isAvailable = useStore($isAvailable);
@@ -48,10 +48,6 @@ function SettingsList() {
       chevron: true,
     },
     {
-      id: 'divider',
-      divider: true,
-    },
-    {
       id: 'reddit',
       text: 'Ask for help on reddit',
       onPress: () => {
@@ -59,14 +55,9 @@ function SettingsList() {
       },
     },
     {
-      id: 'divider',
-      divider: true,
-    },
-    {
       id: 'logout',
       text: 'Logout',
       onPress: logout,
-      separate: true,
     },
   ];
 

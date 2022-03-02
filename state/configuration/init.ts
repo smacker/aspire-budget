@@ -37,12 +37,12 @@ setCurrencyCodeFx.use(async (currency) => {
   const err = new Error('Unknown currency code');
 
   try {
-    let nf = new Intl.NumberFormat('en', {
+    const nf = new Intl.NumberFormat('en', {
       style: 'currency',
       currencyDisplay: 'name',
       currency,
     });
-    let fmt = nf.format(123);
+    const fmt = nf.format(123);
     if (
       fmt.substring(0, 3) === currency ||
       fmt.substring(fmt.length - 3) === currency
