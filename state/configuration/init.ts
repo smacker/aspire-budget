@@ -13,7 +13,13 @@ import {
 
 const LOCALE_KEY = '@locale_key';
 
-loadLocaleFx.use(() => loadOrThrow(LOCALE_KEY));
+loadLocaleFx.use(async () => {
+  try {
+    return await loadOrThrow(LOCALE_KEY);
+  } catch (e) {
+    // ignore error, default locale will be used
+  }
+});
 
 setLocaleFx.use(async (value) => {
   const err = new Error('Unknown locale');
@@ -31,7 +37,13 @@ setLocaleFx.use(async (value) => {
 
 const CURRENCY_CODE_KEY = '@currency_code_key';
 
-loadCurrencyCodeFx.use(() => loadOrThrow(CURRENCY_CODE_KEY));
+loadCurrencyCodeFx.use(async () => {
+  try {
+    return await loadOrThrow(CURRENCY_CODE_KEY);
+  } catch (e) {
+    // ignore error, default locale currency code be used
+  }
+});
 
 setCurrencyCodeFx.use(async (currency) => {
   const err = new Error('Unknown currency code');
