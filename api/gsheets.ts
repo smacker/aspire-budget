@@ -16,8 +16,8 @@ export default class GSheetsAps {
   private authData?: AuthData;
   private spreadsheetId?: string;
 
-  constructor(clientId: string) {
-    this.auth = new GoogleAuthLocalStorage(clientId, scopes);
+  constructor() {
+    this.auth = new GoogleAuthLocalStorage(scopes);
   }
 
   public async init() {

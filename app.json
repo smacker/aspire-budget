@@ -22,13 +22,7 @@
     },
     "android": {
       "package": "ru.smacker.aspire",
-      "versionCode": 1,
-      "config": {
-        "googleSignIn": {
-          "apiKey": "***REMOVED***",
-          "certificateHash": "***REMOVED***"
-        }
-      }
+      "versionCode": 1
     }
   }
 }
