@@ -12,8 +12,12 @@ import api from '../../api';
 // effects
 
 initApiFx.use(async () => {
-  await api.init();
-  return true;
+  try {
+    await api.init();
+    return true;
+  } catch (e) {
+    return false;
+  }
 });
 
 gSignInFx.use(async () => {
