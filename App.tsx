@@ -1,7 +1,7 @@
 import './polyfills';
 
-import React from 'react';
-import AppLoading from 'expo-app-loading';
+import React, { useCallback } from 'react';
+import * as SplashScreen from 'expo-splash-screen';
 import { MaterialIcons } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -20,6 +20,9 @@ import SettingsScreen from './screens/settings/SettingsScreen';
 import './state/app/init';
 import { AppGate, $isReady } from './state/app';
 import { $isLocked, tryUnlock } from './state/lock';
+
+// Keep the splash screen visible while we fetch resources
+SplashScreen.preventAutoHideAsync();
 
 const Tab = createBottomTabNavigator();
 
@@ -79,17 +82,29 @@ function App() {
   // init the app
   useGate(AppGate);
 
+  const onReady = useCallback(async () => {
+    if (isReady) {
+      // This tells the splash screen to hide immediately! If we call this after
+      // `setAppIsReady`, then we may see a blank screen while the app is
+      // loading its initial state and rendering its first pixels. So instead,
+      // we hide the splash screen once we know the root view has already
+      // performed layout.
+      await SplashScreen.hideAsync();
+    }
+  }, [isReady]);
+
   // waiting for loading of resources and initialization of the state
+  // no need to render anything, splash screen is shown
   if (!isReady) {
-    return <AppLoading />;
+    return null;
   }
 
   if (isLocked) {
-    return <LockScreen onClick={tryUnlock} />;
+    return <LockScreen onClick={tryUnlock} onLayout={onReady} />;
   }
 
   return (
-    <NavigationContainer>
+    <NavigationContainer onReady={onReady}>
       <ScreenSelector />
     </NavigationContainer>
   );

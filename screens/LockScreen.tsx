@@ -19,9 +19,9 @@ const styles = StyleSheet.create({
   },
 });
 
-function LockScreen({ onClick }) {
+function LockScreen({ onClick, onLayout }) {
   return (
-    <Pressable onPress={onClick} style={styles.container}>
+    <Pressable onPress={onClick} style={styles.container} onLayout={onLayout}>
       <ImageBackground source={splash} style={styles.image}>
         <Text style={styles.text}>Tap to unlock</Text>
       </ImageBackground>
