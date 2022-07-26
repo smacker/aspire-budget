@@ -100,13 +100,11 @@ function App() {
     return null;
   }
 
-  if (isLocked) {
-    return <LockScreen onClick={tryUnlock} onLayout={onReady} />;
-  }
-
   return (
     <NavigationContainer onReady={onReady}>
-      <ScreenSelector />
+      <LockScreen onClick={tryUnlock} isLocked={isLocked}>
+        <ScreenSelector />
+      </LockScreen>
     </NavigationContainer>
   );
 }
