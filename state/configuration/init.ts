@@ -78,10 +78,12 @@ async function loadOrThrow(key: string) {
   throw new Error('no value');
 }
 
-$locale.on(loadLocaleFx, (_, data) => data).on(setLocaleFx, (_, data) => data);
+$locale
+  .on(loadLocaleFx.doneData, (_, data) => data)
+  .on(setLocaleFx.doneData, (_, data) => data);
 $currencyCode
-  .on(loadCurrencyCodeFx, (_, data) => data)
-  .on(setCurrencyCodeFx, (_, data) => data);
+  .on(loadCurrencyCodeFx.doneData, (_, data) => data)
+  .on(setCurrencyCodeFx.doneData, (_, data) => data);
 
 forward({
   from: setLocale,

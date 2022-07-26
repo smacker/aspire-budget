@@ -52,7 +52,7 @@ initFx.use(async () => {
   return true;
 });
 
-$isReady.on(initFx, (_, data) => data);
+$isReady.on(initFx.doneData, (_, data) => data);
 
 forward({
   from: AppGate.open,
