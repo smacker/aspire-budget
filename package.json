@@ -39,7 +39,7 @@
     "jest-expo": "^45.0.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "react-hook-form": "^7.3.6",
+    "react-hook-form": "^7.33.1",
     "react-native": "0.68.2",
     "react-native-dotenv": "^3.3.1",
     "react-native-elements": "^3.4.2",
