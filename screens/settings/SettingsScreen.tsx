@@ -5,7 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import SettingsList from './components/SettingsList';
 
 type StackParamList = {
-  Settings: undefined;
+  SettingsList: undefined;
 };
 const Stack = createStackNavigator<StackParamList>();
 
@@ -16,7 +16,7 @@ const SettingsScreen = () => {
         options={{
           title: 'Settings',
         }}
-        name="Settings"
+        name="SettingsList"
         component={SettingsList}
       />
     </Stack.Navigator>

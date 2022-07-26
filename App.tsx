@@ -31,6 +31,7 @@ function MainScreen() {
     <Tab.Navigator
       initialRouteName="Dashboard"
       screenOptions={({ route }) => ({
+        headerShown: false,
         tabBarIcon: function TabIcon({ color, size }) {
           let iconName;
 
