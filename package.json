@@ -14,7 +14,7 @@
     "@expo/webpack-config": "~0.16.21",
     "@react-native-async-storage/async-storage": "~1.17.3",
     "@react-native-community/datetimepicker": "6.1.2",
-    "@react-native-community/masked-view": "0.1.10",
+    "@react-native-community/masked-view": "^0.1.11",
     "@react-navigation/bottom-tabs": "^5.8.0",
     "@react-navigation/drawer": "^5.9.0",
     "@react-navigation/native": "^5.7.3",
