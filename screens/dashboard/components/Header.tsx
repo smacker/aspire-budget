@@ -8,7 +8,7 @@ import { StatsGate, $statsPending, $stats } from '../../../state/dashboard';
 import { colors } from '../../../components/constants';
 import { unsetColor } from '../../../components/utils';
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create<any>({
   container: {
     width: '100%',
     flexDirection: 'row',
@@ -69,14 +69,14 @@ function Header() {
         <Text>to budget</Text>
         <Currency
           style={styles.AvailableValue(stats.toBudget)}
-          value={stats.toBudget}
+          value={+stats.toBudget}
         />
       </View>
       <View style={styles.item}>
         <Text>spent</Text>
         <Currency
           style={styles.ActivityValue(stats.spent)}
-          value={stats.spent}
+          value={+stats.spent}
         />
       </View>
       <View style={styles.item}>

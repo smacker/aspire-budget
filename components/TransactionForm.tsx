@@ -39,6 +39,7 @@ function TransactionForm({ categoryInit = '', accountInit = '', back }) {
     amount: '',
     category: categoryInit,
     account: accountInit,
+    account2: '',
     to: '',
     memo: '',
   };
@@ -303,7 +304,7 @@ function TransactionForm({ categoryInit = '', accountInit = '', back }) {
 
 export default TransactionForm;
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create<any>({
   Container: {
     flex: 1,
   },
