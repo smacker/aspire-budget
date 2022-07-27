@@ -3,23 +3,13 @@ import { forward } from 'effector';
 import {
   setLocale,
   setCurrencyCode,
-  loadLocaleFx,
   setLocaleFx,
   loadCurrencyCodeFx,
   setCurrencyCodeFx,
   $locale,
   $currencyCode,
 } from './index';
-
-const LOCALE_KEY = '@locale_key';
-
-loadLocaleFx.use(async () => {
-  try {
-    return await loadOrThrow(LOCALE_KEY);
-  } catch (e) {
-    // ignore error, default locale will be used
-  }
-});
+import { $spreadsheetConfig } from '../spreadsheet/index';
 
 setLocaleFx.use(async (value) => {
   const err = new Error('Unknown locale');
@@ -31,7 +21,6 @@ setLocaleFx.use(async (value) => {
     throw err;
   }
 
-  await AsyncStorage.setItem(LOCALE_KEY, value);
   return value;
 });
 
@@ -78,12 +67,16 @@ async function loadOrThrow(key: string) {
   throw new Error('no value');
 }
 
-$locale
-  .on(loadLocaleFx.doneData, (_, data) => data)
-  .on(setLocaleFx.doneData, (_, data) => data);
+$locale.on(setLocaleFx.doneData, (_, data) => data);
 $currencyCode
   .on(loadCurrencyCodeFx.doneData, (_, data) => data)
   .on(setCurrencyCodeFx.doneData, (_, data) => data);
+
+forward({
+  // convert en_GB (google sheets) to en-GB required by Intl module
+  from: $spreadsheetConfig.map((config) => config?.locale.replace('_', '-')),
+  to: setLocaleFx,
+});
 
 forward({
   from: setLocale,

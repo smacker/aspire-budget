@@ -5,7 +5,6 @@ import * as Localization from 'expo-localization';
 export const setLocale = app.createEvent<string>();
 export const setCurrencyCode = app.createEvent<string>();
 
-export const loadLocaleFx = app.createEffect<void, string, Error>();
 export const setLocaleFx = app.createEffect<string, string, Error>();
 export const loadCurrencyCodeFx = app.createEffect<void, string, Error>();
 export const setCurrencyCodeFx = app.createEffect<string, string, Error>();
@@ -24,3 +23,7 @@ export const $currencyFormatter = combine(
       currency: currencyCode,
     })
 );
+
+export const $dateFormatter = $locale.map((locale) => {
+  return new Intl.DateTimeFormat(locale).format;
+});

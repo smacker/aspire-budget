@@ -1,4 +1,3 @@
-import { formatDate } from '../helpers/date';
 import GoogleAuthLocalStorage from './gauthlocalstorage';
 import { Spreadsheet, Stats, Category, Balance, Transaction } from '../types';
 import { AuthData, IGAuth } from './types';
@@ -65,6 +64,15 @@ export default class GSheetsAps {
 
     const verison = data.values[0][data.values[0].length - 1];
     return verison === '3.2.0' || verison === '3.3.0';
+  }
+
+  public async fetchConfig() {
+    const resp = await this.fetch(`${sheetsBaseURL}/${this.spreadsheetId}`);
+    const data = await resp.json();
+
+    return {
+      locale: data.properties.locale,
+    };
   }
 
   public async fetchMainStats(): Promise<Stats> {
@@ -176,7 +184,7 @@ export default class GSheetsAps {
       majorDimension: 'ROWS',
       values: [
         [
-          formatDate(data.date),
+          this.dateToSerialNumber(data.date),
           !data.inflow ? data.amount : '',
           data.inflow ? data.amount : '',
           data.category,
@@ -236,5 +244,21 @@ export default class GSheetsAps {
     }
 
     return resp;
+  }
+
+  // Google Sheets stores dates as number of days since December 30th 1899
+  // for now assume timezone in the sheet & on the phone is the same
+  private dateToSerialNumber(input: Date): number {
+    // drop time part
+    const d = new Date(input);
+    d.setHours(0);
+    d.setMinutes(0);
+    d.setSeconds(0);
+    d.setMilliseconds(0);
+    // apply timezone
+    const unixTime = d.getTime() - d.getTimezoneOffset() * 60 * 1000;
+    // unix time (since 1970) convert to days & add difference with December 30th 1899
+    const serialNumber = unixTime / (24 * 60 * 60 * 1000) + 25567 + 2;
+    return serialNumber;
   }
 }

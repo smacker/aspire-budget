@@ -13,9 +13,9 @@ import {
   $txError,
   addTransactionFx,
 } from '../state/transactions';
+import { $dateFormatter } from '../state/configuration';
 
 import { colors } from './constants';
-import { formatDate } from '../helpers/date';
 
 const accountTransferCategory = '↕️ Account Transfer';
 const accountTxCategories = [
@@ -28,6 +28,7 @@ const accountTxCategories = [
 function TransactionForm({ categoryInit = '', accountInit = '', back }) {
   const accounts = useStore($accounts);
   const serverError = useStore($txError);
+  const dateFormatter = useStore($dateFormatter);
 
   useGate(AccountsGate);
 
@@ -238,7 +239,7 @@ function TransactionForm({ categoryInit = '', accountInit = '', back }) {
           <ListItem.Content style={styles.FormRow}>
             <Text>Date</Text>
             <Text style={styles.DefaultValue(dirtyFields.date)}>
-              {formatDate(date)}
+              {dateFormatter(date)}
             </Text>
           </ListItem.Content>
           <ListItem.Chevron />

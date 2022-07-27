@@ -20,7 +20,7 @@ import {
   $isVisible,
 } from './index';
 import { isAvailableFx, isEnabledFx, tryUnlock } from '../lock';
-import { loadLocaleFx, loadCurrencyCodeFx } from '../configuration';
+import { loadCurrencyCodeFx } from '../configuration';
 import { initApiFx } from '../auth';
 import { loadSpreadsheetIdFx } from '../spreadsheet';
 import { addTransactionFx } from '../transactions';
@@ -41,7 +41,6 @@ initFx.use(async () => {
     loadFontsFx(),
     isAvailableFx(),
     isEnabledFx(),
-    loadLocaleFx(),
     loadCurrencyCodeFx(),
   ]);
   await initApiFx();

@@ -36,3 +36,7 @@ export type Stats = {
   budgeted?: string;
   pending?: string;
 };
+
+export type SpreadsheetConfig = {
+  locale: string;
+};

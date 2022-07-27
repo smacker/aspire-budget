@@ -1,6 +1,6 @@
 import { app } from '../app/domain';
 import { createGate } from 'effector-react';
-import { Spreadsheet } from '../../types';
+import { Spreadsheet, SpreadsheetConfig } from '../../types';
 
 export const SpreadsheetsGate = createGate();
 
@@ -18,9 +18,17 @@ export const loadSpreadsheetListFx = app.createEffect<
   Error
 >();
 export const selectSpreadsheetIdFx = app.createEffect<string, string, Error>();
+export const loadSpreadsheetConfigFx = app.createEffect<
+  void,
+  SpreadsheetConfig | null,
+  Error
+>();
 export const removeSpreadsheetIdFx = app.createEffect<void, void, Error>();
 
 export const $spreadsheetId = app.createStore<string>(null);
 export const $spreadsheetError = app.createStore<Error>(null);
 export const $spreadsheets = app.createStore<Spreadsheet[]>([]);
 export const $spreadsheetsError = app.createStore<Error>(null);
+export const $spreadsheetConfig = app.createStore<SpreadsheetConfig | null>(
+  null
+);

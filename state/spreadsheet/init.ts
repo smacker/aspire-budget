@@ -7,11 +7,13 @@ import {
   loadSpreadsheetListFx,
   loadSpreadsheetIdFx,
   selectSpreadsheetIdFx,
+  loadSpreadsheetConfigFx,
   removeSpreadsheetIdFx,
   $spreadsheets,
   $spreadsheetsError,
   $spreadsheetId,
   $spreadsheetError,
+  $spreadsheetConfig,
   SpreadsheetsGate,
 } from './index';
 import api from '../../api';
@@ -43,6 +45,8 @@ selectSpreadsheetIdFx.use(async (id) => {
   return id;
 });
 
+loadSpreadsheetConfigFx.use(() => api.fetchConfig());
+
 loadSpreadsheetListFx.use(() => api.fetchSpreadSheets());
 
 removeSpreadsheetIdFx.use(async () => {
@@ -59,6 +63,8 @@ $spreadsheetId
 $spreadsheetError
   .reset(selectSpreadsheetId)
   .on(selectSpreadsheetIdFx.failData, (_, err) => err);
+
+$spreadsheetConfig.on(loadSpreadsheetConfigFx.doneData, (_, data) => data);
 
 $spreadsheets.on(loadSpreadsheetListFx.doneData, (_, data) => data);
 $spreadsheetsError.on(loadSpreadsheetListFx.failData, (_, data) => data);
@@ -80,6 +86,11 @@ guard({
   source: selectSpreadsheetId,
   filter: $isAuth,
   target: selectSpreadsheetIdFx,
+});
+
+forward({
+  from: $spreadsheetId,
+  to: loadSpreadsheetConfigFx,
 });
 
 forward({
