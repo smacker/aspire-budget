@@ -64,6 +64,7 @@ function ScreenSelector() {
   const isAuth = useStore($isAuth);
   const spreadsheetId = useStore($spreadsheetId);
   const loginPending = useStore(gSignInFx.pending);
+  const isLocked = useStore($isLocked);
 
   if (!isAuth) {
     return <LoginScreen pending={loginPending} login={gSignIn} />;
@@ -73,12 +74,15 @@ function ScreenSelector() {
     return <SpreadSheetsScreen />;
   }
 
-  return <MainScreen />;
+  return (
+    <LockScreen onClick={tryUnlock} isLocked={isLocked}>
+      <MainScreen />
+    </LockScreen>
+  );
 }
 
 function App() {
   const isReady = useStore($isReady);
-  const isLocked = useStore($isLocked);
 
   // init the app
   useGate(AppGate);
@@ -102,9 +106,7 @@ function App() {
 
   return (
     <NavigationContainer onReady={onReady}>
-      <LockScreen onClick={tryUnlock} isLocked={isLocked}>
-        <ScreenSelector />
-      </LockScreen>
+      <ScreenSelector />
     </NavigationContainer>
   );
 }
