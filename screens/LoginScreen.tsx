@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     fontSize: 35,
   },
   actionContainer: {
-    height: 30,
+    height: 80,
   },
 });
 
