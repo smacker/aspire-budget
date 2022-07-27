@@ -20,6 +20,7 @@ export const $currencyFormatter = combine(
   (locale, currencyCode) =>
     new Intl.NumberFormat(locale, {
       style: 'currency',
+      currencyDisplay: 'symbol',
       currency: currencyCode,
     })
 );
