@@ -58,6 +58,7 @@ class GoogleAuthRequest extends AuthSession.AuthRequest {
 export default class GoogleAuth implements IGAuth {
   private useProxy: boolean;
   private clientId: string;
+  private clientSecret: string;
   private scopes: string[];
 
   constructor(scopes: string[]) {
@@ -70,6 +71,7 @@ export default class GoogleAuth implements IGAuth {
           android: ANDROID_CLIENT_ID,
           //default: 'webClientId',
         });
+    this.clientSecret = this.useProxy ? EXPO_CLIENT_SECRET : undefined;
     this.scopes = scopes;
   }
 
@@ -101,7 +103,7 @@ export default class GoogleAuth implements IGAuth {
       const exchangeRequest = new AuthSession.AccessTokenRequest({
         clientId: this.clientId,
         // mandatory for refreshToken
-        clientSecret: EXPO_CLIENT_SECRET,
+        clientSecret: this.clientSecret,
         redirectUri,
         scopes: this.scopes,
         code: resp.params.code,
@@ -129,7 +131,7 @@ export default class GoogleAuth implements IGAuth {
     const now = new Date().getTime();
     const req = new AuthSession.RefreshTokenRequest({
       clientId: this.clientId,
-      clientSecret: EXPO_CLIENT_SECRET,
+      clientSecret: this.clientSecret,
       refreshToken,
     });
     const resp = await req.performAsync(discovery);
