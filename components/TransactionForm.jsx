@@ -239,7 +239,7 @@ function TransactionForm({ categoryInit = '', accountInit = '', back }) {
           <ListItem.Content style={styles.FormRow}>
             <Text>Date</Text>
             <Text style={styles.DefaultValue(dirtyFields.date)}>
-              {dateFormatter(date)}
+              {dateFormatter.format(date)}
             </Text>
           </ListItem.Content>
           <ListItem.Chevron />

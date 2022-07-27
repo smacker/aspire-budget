@@ -29,5 +29,5 @@ export const $currencyFormatter = combine(
 );
 
 export const $dateFormatter = $locale.map((locale) => {
-  return new Intl.DateTimeFormat(locale).format;
+  return new Intl.DateTimeFormat(locale);
 });
