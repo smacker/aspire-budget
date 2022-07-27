@@ -11,7 +11,6 @@
     "lint": "tsc --noEmit && yarn eslint . --ext .ts,.tsx,.js,.jsx"
   },
   "dependencies": {
-    "@config-plugins/android-jsc-intl": "^0.0.0",
     "@expo/webpack-config": "~0.16.21",
     "@react-native-async-storage/async-storage": "~1.17.3",
     "@react-native-community/datetimepicker": "6.1.2",
