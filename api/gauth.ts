@@ -2,7 +2,7 @@ import Constants, { ExecutionEnvironment } from 'expo-constants';
 import * as Application from 'expo-application';
 import * as AuthSession from 'expo-auth-session';
 import { Platform } from 'react-native';
-import { EXPO_CLIENT_ID, ANDROID_CLIENT_ID } from '@env';
+import { EXPO_CLIENT_ID, EXPO_CLIENT_SECRET, ANDROID_CLIENT_ID } from '@env';
 import { AuthData, IGAuth } from './types';
 
 export const discovery: AuthSession.DiscoveryDocument = {
@@ -82,18 +82,39 @@ export default class GoogleAuth implements IGAuth {
       native: `${Application.applicationId}:/oauthredirect`,
       useProxy: this.useProxy,
     });
+    // "refreshToken" is available only for responseType=code flow
     const req = new GoogleAuthRequest({
       clientId: this.clientId,
       scopes: this.scopes,
       redirectUri,
-      responseType: AuthSession.ResponseType.Token,
+      responseType: AuthSession.ResponseType.Code,
+      // mandatory to receive refreshToken in the response
+      prompt: AuthSession.Prompt.Consent,
+      extraParams: {
+        // mandatory to receive refreshToken in the response
+        access_type: 'offline',
+      },
     });
     const resp = await req.promptAsync(discovery, { useProxy: this.useProxy });
     if (resp.type === 'success') {
+      const now = new Date().getTime();
+      const exchangeRequest = new AuthSession.AccessTokenRequest({
+        clientId: this.clientId,
+        // mandatory for refreshToken
+        clientSecret: EXPO_CLIENT_SECRET,
+        redirectUri,
+        scopes: this.scopes,
+        code: resp.params.code,
+        extraParams: {
+          code_verifier: req.codeVerifier || '',
+        },
+      });
+      const authentication = await exchangeRequest.performAsync(discovery);
+
       return {
-        accessToken: resp.authentication.accessToken,
-        refreshToken: resp.authentication.refreshToken,
-        expiryTime: new Date().getTime() + 60 * 60 * 1000, // google tokens are valid for 1h
+        accessToken: authentication.accessToken,
+        refreshToken: authentication.refreshToken,
+        expiryTime: now + authentication.expiresIn * 1000,
       };
     } else {
       throw `incorrect response type '${resp.type}'`;
@@ -105,27 +126,18 @@ export default class GoogleAuth implements IGAuth {
   }
 
   public async refresh(refreshToken: string) {
-    const resp = await fetch(
-      `https://oauth2.googleapis.com/token?client_id=${this.clientId}&refresh_token=${refreshToken}&grant_type=refresh_token`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-      }
-    );
-
-    if (resp.status !== 200) {
-      throw `google refresh token wrong status code ${resp.status}`;
-    }
-
-    const { access_token: accessToken, expires_in: expiryTime } =
-      await resp.json();
+    const now = new Date().getTime();
+    const req = new AuthSession.RefreshTokenRequest({
+      clientId: this.clientId,
+      clientSecret: EXPO_CLIENT_SECRET,
+      refreshToken,
+    });
+    const resp = await req.performAsync(discovery);
 
     return {
-      accessToken,
+      accessToken: resp.accessToken,
       refreshToken,
-      expiryTime: new Date().getTime() + expiryTime * 1000,
+      expiryTime: now + resp.expiresIn * 1000,
     };
   }
 }
