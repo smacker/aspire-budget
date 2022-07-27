@@ -38,14 +38,12 @@ function SettingsList() {
     {
       id: 'locale',
       text: 'Locale',
-      value: locale,
-      chevron: true,
+      value: `${locale} (set in spreadsheet)`,
     },
     {
       id: 'currency',
       text: 'Currency code',
-      value: currencyCode,
-      chevron: true,
+      value: `${currencyCode} (can't be changed for now)`,
     },
     {
       id: 'reddit',
