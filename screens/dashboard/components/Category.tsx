@@ -8,8 +8,9 @@ import { StackParamList } from '../DashboardScreen';
 
 import { colors } from '../../../components/constants';
 import { Category as CategoryType } from '../../../types';
+import { coloredValue } from '../../../components/utils';
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create<any>({
   Container: {
     flex: 1,
   },
@@ -31,9 +32,9 @@ const styles = StyleSheet.create({
   BudgetedAmount: {
     color: colors.budgeted,
   },
-  AvailableAmount: {
-    color: colors.available,
-  },
+  AvailableAmount: (v: number, total: number) => ({
+    color: coloredValue(v, total, colors.available),
+  }),
   ActivityAmount: {
     color: colors.activity,
   },
@@ -52,7 +53,10 @@ function Amounts({ item }: { item: CategoryType }) {
       <View style={styles.Amount}>
         <Text>Available</Text>
         <Currency
-          style={[styles.AmountValue, styles.AvailableAmount]}
+          style={[
+            styles.AmountValue,
+            styles.AvailableAmount(item.available, item.budgetedTotal),
+          ]}
           value={item.available}
         />
       </View>

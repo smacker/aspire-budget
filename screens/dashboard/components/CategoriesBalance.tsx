@@ -17,7 +17,7 @@ import {
 } from '../../../state/dashboard';
 
 import { colors } from '../../../components/constants';
-import { unsetColor, warningColor } from '../../../components/utils';
+import { unsetColor, coloredValue } from '../../../components/utils';
 import { Category } from '../../../types';
 
 const styles = StyleSheet.create<any>({
@@ -50,7 +50,7 @@ const styles = StyleSheet.create<any>({
     color: unsetColor(v, colors.budgeted),
   }),
   AvailableValue: (v: number, total: number) => ({
-    color: unsetColor(v, warningColor(v, total, colors.available)),
+    color: coloredValue(v, total, colors.available),
   }),
   ActivityValue: (v: number) => ({
     color: unsetColor(v, colors.activity),
