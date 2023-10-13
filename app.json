@@ -13,7 +13,9 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
@@ -24,6 +26,9 @@
       "package": "ru.smacker.aspire",
       "versionCode": 1
     },
-    "scheme": "ru.smacker.aspire"
+    "scheme": "ru.smacker.aspire",
+    "plugins": [
+      "expo-localization"
+    ]
   }
 }
