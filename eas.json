@@ -4,6 +4,13 @@
     "development": {
       "developmentClient": true,
       "distribution": "internal"
+    },
+    "master": {
+      "channel": "master",
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      }
     }
   },
   "submit": {

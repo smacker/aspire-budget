@@ -16,5 +16,8 @@ web-build/
 # local config
 .env
 
+# build artifacts
+dist/
+
 # private notes
 README.private.md
