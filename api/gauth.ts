@@ -1,8 +1,7 @@
-import Constants, { ExecutionEnvironment } from 'expo-constants';
 import * as Application from 'expo-application';
 import * as AuthSession from 'expo-auth-session';
 import { Platform } from 'react-native';
-import { EXPO_CLIENT_ID, EXPO_CLIENT_SECRET, ANDROID_CLIENT_ID } from '@env';
+import { ANDROID_CLIENT_ID } from '@env';
 import { AuthData, IGAuth } from './types';
 
 export const discovery: AuthSession.DiscoveryDocument = {
@@ -56,22 +55,16 @@ class GoogleAuthRequest extends AuthSession.AuthRequest {
 }
 
 export default class GoogleAuth implements IGAuth {
-  private useProxy: boolean;
   private clientId: string;
   private clientSecret: string;
   private scopes: string[];
 
   constructor(scopes: string[]) {
-    this.useProxy =
-      Constants.executionEnvironment === ExecutionEnvironment.StoreClient;
-    this.clientId = this.useProxy
-      ? EXPO_CLIENT_ID
-      : Platform.select({
-          //ios: 'iosClientId',
-          android: ANDROID_CLIENT_ID,
-          //default: 'webClientId',
-        });
-    this.clientSecret = this.useProxy ? EXPO_CLIENT_SECRET : undefined;
+    this.clientId = Platform.select({
+      //ios: 'iosClientId',
+      android: ANDROID_CLIENT_ID,
+      //default: 'webClientId',
+    });
     this.scopes = scopes;
   }
 
@@ -82,7 +75,6 @@ export default class GoogleAuth implements IGAuth {
   public async login() {
     const redirectUri = AuthSession.makeRedirectUri({
       native: `${Application.applicationId}:/oauthredirect`,
-      useProxy: this.useProxy,
     });
     // "refreshToken" is available only for responseType=code flow
     const req = new GoogleAuthRequest({
@@ -97,7 +89,7 @@ export default class GoogleAuth implements IGAuth {
         access_type: 'offline',
       },
     });
-    const resp = await req.promptAsync(discovery, { useProxy: this.useProxy });
+    const resp = await req.promptAsync(discovery);
     if (resp.type === 'success') {
       const now = new Date().getTime();
       const exchangeRequest = new AuthSession.AccessTokenRequest({

@@ -23,10 +23,11 @@ Coming soon.
 1. Obtain Google API keys for [Auth](https://docs.expo.dev/guides/authentication/#google) and [Sheets API](https://developers.google.com/sheets/api/guides/authorizing).
 2. Install dependencies: `yarn`
 3. Create `.env` file with the following content to access Sheets API:
+
 ```
-EXPO_CLIENT_ID=<your client id>
-EXPO_CLIENT_SECRET=<your client secret>
-ANDROID_STANDALONE_CLIENT_ID=<your client id>
+ANDROID_CLIENT_ID=<your client id>
 ```
-4. Start development server: `yarn start`
-5. Use [Expo](https://docs.expo.dev/) client to run it on your mobile.
+
+4. Create and install the development build `eas build --profile development --platform android`
+5. Start development server: `yarn start`
+6. Open the development build app and connect to the server

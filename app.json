@@ -29,6 +29,11 @@
     "scheme": "ru.smacker.aspire",
     "plugins": [
       "expo-localization"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "9646d6b8-6d4b-4f76-a6d0-7924a448e887"
+      }
+    }
   }
 }

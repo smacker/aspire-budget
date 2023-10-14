@@ -1,7 +1,7 @@
 {
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "expo start",
+    "start": "expo start --dev-client",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
@@ -24,6 +24,7 @@
     "effector-react": "^22.0.6",
     "expo": "^49.0.0",
     "expo-auth-session": "~5.0.2",
+    "expo-dev-client": "~2.4.11",
     "expo-font": "~11.4.0",
     "expo-linking": "~5.0.2",
     "expo-local-authentication": "~13.4.1",
@@ -52,10 +53,10 @@
     "@typescript-eslint/eslint-plugin": "^5.31.0",
     "@typescript-eslint/parser": "^5.31.0",
     "babel-preset-expo": "^9.3.0",
-    "eslint-plugin-jest": "^26.6.0",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react": "^7.30.1",
     "eslint": "^8.20.0",
+    "eslint-plugin-jest": "^26.6.0",
+    "eslint-plugin-react": "^7.30.1",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "jest-expo": "^49.0.0",
     "react-native-bundle-visualizer": "^3.1.1",
     "typescript": "^5.1.3"
