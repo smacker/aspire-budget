@@ -1,0 +1,28 @@
+diff --git a/node_modules/react-native-snackbar-component/index.js b/node_modules/react-native-snackbar-component/index.js
+index ae1e313..96d4fc5 100644
+--- a/node_modules/react-native-snackbar-component/index.js
++++ b/node_modules/react-native-snackbar-component/index.js
+@@ -5,8 +5,8 @@ import {
+   Text,
+   Animated,
+   Easing,
+-  ViewPropTypes,
+ } from 'react-native';
++import { ViewPropTypes } from 'deprecated-react-native-prop-types';
+ import { Touchable } from './src';
+ 
+ /* Values are from https://material.io/guidelines/motion/duration-easing.html#duration-easing-dynamic-durations */
+diff --git a/node_modules/react-native-snackbar-component/src/Touchable.js b/node_modules/react-native-snackbar-component/src/Touchable.js
+index 0b08723..f5a6bbc 100644
+--- a/node_modules/react-native-snackbar-component/src/Touchable.js
++++ b/node_modules/react-native-snackbar-component/src/Touchable.js
+@@ -4,8 +4,8 @@ import {
+   View,
+   TouchableOpacity,
+   TouchableNativeFeedback,
+-  ViewPropTypes,
+ } from 'react-native';
++import { ViewPropTypes } from 'deprecated-react-native-prop-types';
+ import {
+   IS_ANDROID,
+   IS_LT_LOLLIPOP,

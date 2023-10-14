@@ -9,7 +9,8 @@
     "test": "jest",
     "testDebug": "jest -o --watch --coverage=false",
     "lint": "tsc --noEmit && yarn eslint . --ext .ts,.tsx,.js,.jsx",
-    "analyze": "NODE_OPTIONS=--no-experimental-fetch yarn run react-native-bundle-visualizer"
+    "analyze": "NODE_OPTIONS=--no-experimental-fetch yarn run react-native-bundle-visualizer",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@expo/webpack-config": "^19.0.0",
@@ -20,6 +21,7 @@
     "@react-navigation/drawer": "^6.4.3",
     "@react-navigation/native": "^6.0.11",
     "@react-navigation/stack": "^6.2.2",
+    "deprecated-react-native-prop-types": "^5.0.0",
     "effector": "^22.2.0",
     "effector-react": "^22.0.6",
     "expo": "^49.0.0",
@@ -58,6 +60,7 @@
     "eslint-plugin-react": "^7.30.1",
     "eslint-plugin-react-hooks": "^4.6.0",
     "jest-expo": "^49.0.0",
+    "patch-package": "^8.0.0",
     "react-native-bundle-visualizer": "^3.1.1",
     "typescript": "^5.1.3"
   },
