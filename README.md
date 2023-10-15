@@ -8,8 +8,6 @@ A simple mobile app to work with [aspire budgeting spreadsheet](https://aspirebu
 
 Standalone APK: [Download from GitHub releases](https://github.com/smacker/aspire-budget/releases)
 
-Expo Go release channel: https://expo.dev/@smacker/aspire
-
 #### iOS
 
 Coming soon.
