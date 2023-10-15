@@ -1,11 +1,16 @@
 {
   "build": {
+    "base": {
+      "node": "18.16.0"
+    },
     "release": {},
     "development": {
+      "extends": "base",
       "developmentClient": true,
       "distribution": "internal"
     },
     "master": {
+      "extends": "base",
       "channel": "master",
       "distribution": "internal",
       "android": {
