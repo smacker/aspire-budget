@@ -1,7 +1,6 @@
 import * as Application from 'expo-application';
 import * as AuthSession from 'expo-auth-session';
 import { Platform } from 'react-native';
-import { ANDROID_CLIENT_ID } from '@env';
 import { AuthData, IGAuth } from './types';
 
 export const discovery: AuthSession.DiscoveryDocument = {
@@ -62,7 +61,7 @@ export default class GoogleAuth implements IGAuth {
   constructor(scopes: string[]) {
     this.clientId = Platform.select({
       //ios: 'iosClientId',
-      android: ANDROID_CLIENT_ID,
+      android: process.env.EXPO_PUBLIC_ANDROID_CLIENT_ID,
       //default: 'webClientId',
     });
     this.scopes = scopes;

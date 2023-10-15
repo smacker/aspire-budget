@@ -25,7 +25,7 @@ Coming soon.
 3. Create `.env` file with the following content to access Sheets API:
 
 ```
-ANDROID_CLIENT_ID=<your client id>
+EXPO_PUBLIC_ANDROID_CLIENT_ID=<your client id>
 ```
 
 4. Create and install the development build `eas build --profile development --platform android`
